@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ClipboardCheck, Users, Rocket, PartyPopper } from 'lucide-react';
 
@@ -9,7 +9,7 @@ const steps = [
         icon: ClipboardCheck,
         step: '01',
         title: 'Book a Consultation',
-        description: 'Tell us about your needs and we&apos;ll create a personalized plan for your journey.',
+        description: 'Tell us about your needs and we\'ll create a personalized plan for your journey.',
         color: 'from-blue-500 to-blue-600',
     },
     {
@@ -36,8 +36,134 @@ const steps = [
 ];
 
 export default function HowItWorks() {
+    const sectionRef = useRef<HTMLDivElement>(null);
+    const stepsRef = useRef<HTMLDivElement>(null);
+    const lineRef = useRef<HTMLDivElement>(null);
+    const [shouldAnimate, setShouldAnimate] = useState(false);
+    const hasSetupRef = useRef(false);
+
+    // Setup: Hide elements after mount (to avoid hydration mismatch)
+    useEffect(() => {
+        if (!hasSetupRef.current) {
+            hasSetupRef.current = true;
+
+            // Hide connection line
+            if (lineRef.current) {
+                lineRef.current.style.transform = 'scaleX(0)';
+            }
+
+            // Hide step cards
+            if (stepsRef.current) {
+                stepsRef.current.querySelectorAll('.step-card').forEach((el) => {
+                    (el as HTMLElement).style.opacity = '0';
+                    (el as HTMLElement).style.transform = 'translateY(60px)';
+                });
+
+                stepsRef.current.querySelectorAll('.step-number').forEach((el) => {
+                    (el as HTMLElement).style.transform = 'scale(0)';
+                });
+
+                stepsRef.current.querySelectorAll('.step-icon').forEach((el) => {
+                    (el as HTMLElement).style.transform = 'scale(0.5)';
+                });
+
+                stepsRef.current.querySelectorAll('.step-arrow').forEach((el) => {
+                    (el as HTMLElement).style.opacity = '0';
+                    (el as HTMLElement).style.transform = 'scale(0)';
+                });
+            }
+        }
+    }, []);
+
+    // Intersection observer for scroll-triggered animations
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && hasSetupRef.current) {
+                        setShouldAnimate(true);
+                    }
+                });
+            },
+            { threshold: 0.2 }
+        );
+
+        if (sectionRef.current) {
+            observer.observe(sectionRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
+
+    // Run animations when shouldAnimate becomes true
+    const runAnimations = useCallback(async () => {
+        const anime = await import('animejs');
+
+        // Create timeline for coordinated animations
+        const timeline = anime.createTimeline({
+            defaults: {
+                easing: 'outExpo',
+            }
+        });
+
+        // Animate the connection line growing
+        if (lineRef.current) {
+            timeline.add(lineRef.current, {
+                scaleX: [0, 1],
+                duration: 800,
+            });
+        }
+
+        // Animate step cards appearing one by one
+        if (stepsRef.current) {
+            const cards = stepsRef.current.querySelectorAll('.step-card');
+            cards.forEach((card, i) => {
+                timeline.add(card, {
+                    translateY: [60, 0],
+                    opacity: [0, 1],
+                    duration: 600,
+                }, i === 0 ? '-=400' : `-=${600 - 150}`);
+            });
+
+            // Animate step numbers popping in
+            const numbers = stepsRef.current.querySelectorAll('.step-number');
+            numbers.forEach((num, i) => {
+                timeline.add(num, {
+                    scale: [0, 1],
+                    duration: 400,
+                }, i === 0 ? '-=800' : `-=${400 - 150}`);
+            });
+
+            // Animate arrow connectors
+            const arrows = stepsRef.current.querySelectorAll('.step-arrow');
+            arrows.forEach((arrow, i) => {
+                timeline.add(arrow, {
+                    scale: [0, 1],
+                    opacity: [0, 1],
+                    duration: 300,
+                }, i === 0 ? '-=600' : `-=${300 - 150}`);
+            });
+
+            // Animate icons with elastic easing
+            const icons = stepsRef.current.querySelectorAll('.step-icon');
+            icons.forEach((icon, i) => {
+                timeline.add(icon, {
+                    scale: [0.5, 1],
+                    duration: 800,
+                    easing: 'outElastic(1, 0.5)',
+                }, i === 0 ? '-=800' : `-=${800 - 100}`);
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        if (shouldAnimate) {
+            runAnimations();
+        }
+    }, [shouldAnimate, runAnimations]);
+
     return (
-        <section className="section bg-beige-100">
+        <section ref={sectionRef} className="section bg-beige-100">
             <div className="container mx-auto">
                 {/* Section header */}
                 <motion.div
@@ -60,34 +186,37 @@ export default function HowItWorks() {
                 </motion.div>
 
                 {/* Steps */}
-                <div className="relative">
-                    {/* Connection line */}
-                    <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-navy-200 via-gold-300 to-navy-200 -translate-y-1/2" />
+                <div className="relative" ref={stepsRef}>
+                    {/* Connection line - animated with anime.js */}
+                    <div
+                        ref={lineRef}
+                        className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-gold-400 to-green-500 -translate-y-1/2 origin-left"
+                    />
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {steps.map((step, index) => (
-                            <motion.div
+                            <div
                                 key={step.step}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                className="relative"
+                                className="step-card relative"
                             >
                                 <div className="bg-white rounded-2xl p-6 shadow-lg border border-beige-200
-                              hover:shadow-2xl hover:-translate-y-2 transition-all duration-300
-                              relative z-10">
+                                    hover:shadow-2xl hover:-translate-y-2 transition-all duration-300
+                                    relative z-10">
                                     {/* Step number */}
-                                    <div className={`absolute -top-4 -right-4 w-12 h-12 rounded-xl
-                                bg-gradient-to-br ${step.color} text-white
-                                flex items-center justify-center font-bold text-lg
-                                shadow-lg`}>
+                                    <div
+                                        className={`step-number absolute -top-4 -right-4 w-12 h-12 rounded-xl
+                                            bg-gradient-to-br ${step.color} text-white
+                                            flex items-center justify-center font-bold text-lg
+                                            shadow-lg`}
+                                    >
                                         {step.step}
                                     </div>
 
                                     {/* Icon */}
-                                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color}
-                                flex items-center justify-center mb-5`}>
+                                    <div
+                                        className={`step-icon w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color}
+                                            flex items-center justify-center mb-5`}
+                                    >
                                         <step.icon className="w-8 h-8 text-white" />
                                     </div>
 
@@ -97,14 +226,14 @@ export default function HowItWorks() {
 
                                 {/* Arrow for desktop */}
                                 {index < steps.length - 1 && (
-                                    <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-20">
+                                    <div className="step-arrow hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-20">
                                         <div className="w-8 h-8 bg-white rounded-full border border-beige-200 shadow
-                                  flex items-center justify-center text-gold-500">
+                                            flex items-center justify-center text-gold-500 font-bold">
                                             →
                                         </div>
                                     </div>
                                 )}
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>

@@ -8,52 +8,52 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Service spots on the Paris "treasure map"
+// Service spots on the Paris "treasure map" - positioned to match the vintage map layout
 const serviceSpots = [
     {
         id: 'banking',
         name: 'Banking',
         icon: '🏦',
         description: 'Open your French bank account with same-day activation support. We partner with student-friendly banks.',
-        position: { x: 18, y: 48 },
+        position: { x: 18, y: 55 },
         link: '/services#banking',
-        color: '#3b82f6',
+        color: '#8B4513', // Sepia brown to match map
     },
     {
         id: 'housing',
-        name: 'Accommodation',
+        name: 'Logement',
         icon: '🏠',
         description: 'Find your perfect Parisian home with our trusted housing partners. Studio, shared, or residence.',
-        position: { x: 50, y: 55 },
+        position: { x: 50, y: 50 },
         link: '/services#housing',
-        color: '#22c55e',
+        color: '#8B4513',
     },
     {
         id: 'travel',
-        name: 'Travel',
+        name: 'Voyage',
         icon: '✈️',
         description: 'Navigate Paris like a local! Get your Navigo pass and discover the best student travel deals.',
-        position: { x: 75, y: 25 },
+        position: { x: 78, y: 22 },
         link: '/services#travel',
-        color: '#8b5cf6',
+        color: '#8B4513',
     },
     {
         id: 'sim',
-        name: 'SIM Card',
+        name: 'Communication',
         icon: '📱',
         description: 'Stay connected with student-friendly mobile plans. Unlimited data, calls, and texts at student prices.',
-        position: { x: 28, y: 72 },
+        position: { x: 30, y: 75 },
         link: '/services#sim',
-        color: '#ec4899',
+        color: '#8B4513',
     },
     {
         id: 'subsidy',
-        name: 'Subsidies',
+        name: 'Aides',
         icon: '💰',
         description: 'Claim up to €200/month in CAF housing subsidies. We handle the paperwork for you!',
-        position: { x: 72, y: 58 },
+        position: { x: 75, y: 55 },
         link: '/services#subsidy',
-        color: '#f59e0b',
+        color: '#8B4513',
     },
 ];
 
@@ -93,16 +93,11 @@ useGLTF.preload('/models/pierre-mascot.glb');
 function Pierre3DCanvas({ mousePosition }: { mousePosition: { x: number; y: number } }) {
     return (
         <Canvas camera={{ position: [0, 0, 5], fov: 50 }} style={{ background: 'transparent' }}>
-            {/* Stronger ambient light for overall brightness */}
-            <ambientLight intensity={1.5} />
-            {/* Main key light - bright warm */}
-            <directionalLight position={[5, 5, 5]} intensity={2} color="#fff5e6" />
-            {/* Fill light from the left */}
-            <directionalLight position={[-5, 3, 5]} intensity={1.2} color="#e6f0ff" />
-            {/* Rim light from behind */}
-            <directionalLight position={[0, -3, -5]} intensity={0.8} color="#ffd700" />
-            {/* Top light for highlights */}
-            <pointLight position={[0, 5, 3]} intensity={1} color="#ffffff" />
+            <ambientLight intensity={1.8} />
+            <directionalLight position={[5, 5, 5]} intensity={2.5} color="#fff5e6" />
+            <directionalLight position={[-5, 3, 5]} intensity={1.5} color="#e6f0ff" />
+            <directionalLight position={[0, -3, -5]} intensity={1} color="#ffd700" />
+            <pointLight position={[0, 5, 3]} intensity={1.5} color="#ffffff" />
             <Suspense fallback={null}>
                 <PierreModel mousePosition={mousePosition} />
             </Suspense>
@@ -163,15 +158,15 @@ export default function TreasureHuntMap() {
     };
 
     return (
-        <section className="relative py-20 bg-gradient-to-b from-beige-100 via-beige-50 to-white overflow-visible">
-            {/* Section header */}
-            <div className="container mx-auto px-4 mb-12 text-center">
+        <section className="relative py-16 bg-[#4a3728] overflow-visible">
+            {/* Section header - white text on dark brown background */}
+            <div className="container mx-auto px-4 mb-8 text-center">
                 <motion.span
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="inline-block px-4 py-1.5 bg-navy-100 text-navy-700 
-                        rounded-full text-sm font-semibold mb-4"
+                    className="inline-block px-4 py-1.5 bg-amber-100/20 text-amber-100 
+                        rounded-full text-sm font-semibold mb-4 border border-amber-200/30"
                 >
                     Your Student Journey
                 </motion.span>
@@ -180,16 +175,16 @@ export default function TreasureHuntMap() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.1 }}
-                    className="text-4xl md:text-5xl font-bold text-navy-700 mb-4"
+                    className="text-4xl md:text-5xl font-bold text-white mb-4"
                 >
-                    Explore with <span className="text-gold-500">Pierre</span>
+                    Aventure Académique <span className="text-amber-300">Parisienne</span>
                 </motion.h2>
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    className="text-lg text-navy-600/70 max-w-2xl mx-auto"
+                    className="text-lg text-amber-100/80 max-w-2xl mx-auto"
                 >
                     Click on each destination to discover how StudyNest helps you!
                 </motion.p>
@@ -198,19 +193,24 @@ export default function TreasureHuntMap() {
             {/* Interactive Map Area with vintage Paris map background */}
             <div
                 ref={containerRef}
-                className="relative mx-auto max-w-6xl aspect-[16/10] rounded-3xl 
-                    shadow-2xl cursor-crosshair overflow-hidden"
+                className="relative mx-auto max-w-6xl aspect-[16/10] rounded-lg 
+                    shadow-2xl cursor-crosshair overflow-visible"
+                style={{
+                    boxShadow: '0 0 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3)',
+                }}
             >
                 {/* Vintage Paris Map Background Image */}
-                <Image
-                    src="/images/paris-map-background.jpg"
-                    alt="Vintage Paris Map"
-                    fill
-                    className="object-cover"
-                    priority
-                />
+                <div className="absolute inset-0 rounded-lg overflow-hidden">
+                    <Image
+                        src="/images/paris-map-background.jpg"
+                        alt="Vintage Paris Map"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                </div>
 
-                {/* Service Spots - No trails, just spots */}
+                {/* Service Spots - styled to blend with vintage map */}
                 {serviceSpots.map((spot) => {
                     const isHovered = hoveredSpot === spot.id;
                     const isClicked = clickedSpot === spot.id;
@@ -226,91 +226,134 @@ export default function TreasureHuntMap() {
                                 zIndex: isClicked || isHovered ? 50 : 10,
                             }}
                         >
-                            {/* Clickable spot marker */}
+                            {/* Clickable spot marker - vintage style */}
                             <motion.div
                                 className="relative cursor-pointer"
                                 animate={{
-                                    scale: isHovered || isClicked ? 1.2 : isFaded ? 0.8 : 1,
-                                    opacity: isFaded ? 0.5 : 1,
+                                    scale: isHovered || isClicked ? 1.15 : isFaded ? 0.9 : 1,
+                                    opacity: isFaded ? 0.6 : 1,
                                 }}
                                 transition={{ duration: 0.3 }}
                                 onClick={() => handleSpotClick(spot.id)}
                             >
-                                {/* Glow ring */}
+                                {/* Glow ring - sepia toned */}
                                 {(isHovered || isClicked) && (
                                     <motion.div
                                         className="absolute inset-0 rounded-full"
-                                        style={{ backgroundColor: spot.color }}
+                                        style={{ backgroundColor: '#c9a66b' }}
                                         animate={{
-                                            scale: [1, 1.8, 1.8],
-                                            opacity: [0.6, 0, 0],
+                                            scale: [1, 1.6, 1.6],
+                                            opacity: [0.5, 0, 0],
                                         }}
                                         transition={{ duration: 1, repeat: Infinity }}
                                     />
                                 )}
 
-                                {/* Main spot */}
+                                {/* Main spot - vintage parchment style */}
                                 <div
-                                    className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-xl md:text-2xl
-                                        shadow-xl border-3 border-white transition-all duration-300"
+                                    className="w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center text-lg md:text-xl
+                                        transition-all duration-300"
                                     style={{
-                                        backgroundColor: isHovered || isClicked ? spot.color : '#fff',
+                                        background: isHovered || isClicked
+                                            ? 'linear-gradient(145deg, #d4a574 0%, #a67c52 100%)'
+                                            : 'linear-gradient(145deg, #f5e6d3 0%, #e8d4b8 100%)',
+                                        border: '3px solid #8B4513',
                                         boxShadow: isHovered || isClicked
-                                            ? `0 0 25px ${spot.color}90, 0 4px 15px rgba(0,0,0,0.3)`
-                                            : '0 4px 15px rgba(0,0,0,0.3)',
+                                            ? '0 4px 20px rgba(139, 69, 19, 0.5), inset 0 2px 4px rgba(255,255,255,0.3)'
+                                            : '0 3px 10px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.3)',
                                     }}
                                 >
                                     {spot.icon}
                                 </div>
 
-                                {/* Label below icon */}
+                                {/* Label - matching map style */}
                                 <motion.div
-                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 
-                                        whitespace-nowrap text-xs font-bold text-navy-800
-                                        bg-white/95 px-2 py-1 rounded-full shadow-md"
-                                    animate={{ opacity: isFaded ? 0.4 : 1 }}
+                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 
+                                        whitespace-nowrap text-xs font-bold
+                                        px-2 py-0.5 rounded"
+                                    style={{
+                                        backgroundColor: 'rgba(245, 230, 211, 0.95)',
+                                        color: '#5c3d2e',
+                                        border: '1px solid #8B4513',
+                                        fontFamily: 'serif',
+                                    }}
+                                    animate={{ opacity: isFaded ? 0.5 : 1 }}
                                 >
                                     {spot.name}
                                 </motion.div>
                             </motion.div>
 
-                            {/* Popup Card - appears when clicked */}
+                            {/* Popup Card - vintage styled, positioned smartly */}
                             <AnimatePresence>
                                 {isClicked && (
                                     <Link href={spot.link}>
                                         <motion.div
-                                            initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                                            initial={{ opacity: 0, scale: 0.9, y: 10 }}
                                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                                            className="absolute left-1/2 -translate-x-1/2 mt-14
-                                                bg-white rounded-2xl p-5 shadow-2xl w-60 md:w-72 text-center
-                                                border-2 cursor-pointer hover:shadow-3xl transition-shadow"
+                                            exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                                            className="absolute left-1/2 -translate-x-1/2
+                                                rounded-xl p-4 shadow-2xl w-56 md:w-64 text-center
+                                                cursor-pointer transition-shadow z-[100]"
                                             style={{
-                                                borderColor: spot.color,
-                                                top: '100%',
+                                                // Position above if spot is in lower half, below otherwise
+                                                ...(spot.position.y > 50
+                                                    ? { bottom: '100%', marginBottom: '60px' }
+                                                    : { top: '100%', marginTop: '60px' }
+                                                ),
+                                                background: 'linear-gradient(145deg, #faf6f0 0%, #f0e6d8 100%)',
+                                                border: '3px solid #8B4513',
+                                                boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
                                             }}
                                             onClick={(e) => e.stopPropagation()}
                                         >
-                                            {/* Arrow pointing up */}
+                                            {/* Arrow pointing to spot */}
                                             <div
-                                                className="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 
-                                                    border-l-8 border-r-8 border-b-8 
-                                                    border-l-transparent border-r-transparent"
-                                                style={{ borderBottomColor: spot.color }}
+                                                className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+                                                style={{
+                                                    ...(spot.position.y > 50
+                                                        ? {
+                                                            top: '100%',
+                                                            borderLeft: '10px solid transparent',
+                                                            borderRight: '10px solid transparent',
+                                                            borderTop: '10px solid #8B4513',
+                                                        }
+                                                        : {
+                                                            bottom: '100%',
+                                                            borderLeft: '10px solid transparent',
+                                                            borderRight: '10px solid transparent',
+                                                            borderBottom: '10px solid #8B4513',
+                                                        }
+                                                    ),
+                                                }}
                                             />
 
                                             <div
-                                                className="w-11 h-11 mx-auto mb-3 rounded-xl flex items-center justify-center text-2xl"
-                                                style={{ backgroundColor: `${spot.color}20` }}
+                                                className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-xl"
+                                                style={{
+                                                    background: 'linear-gradient(145deg, #e8d4b8 0%, #d4bc9a 100%)',
+                                                    border: '2px solid #8B4513',
+                                                }}
                                             >
                                                 {spot.icon}
                                             </div>
-                                            <h3 className="font-bold text-navy-700 text-lg mb-2">{spot.name}</h3>
-                                            <p className="text-navy-600/70 text-sm mb-4">{spot.description}</p>
+                                            <h3
+                                                className="font-bold text-lg mb-1.5"
+                                                style={{ color: '#5c3d2e', fontFamily: 'serif' }}
+                                            >
+                                                {spot.name}
+                                            </h3>
+                                            <p
+                                                className="text-sm mb-3 leading-relaxed"
+                                                style={{ color: '#6b5344' }}
+                                            >
+                                                {spot.description}
+                                            </p>
                                             <span
-                                                className="inline-block px-5 py-2.5 text-sm font-semibold rounded-full text-white
-                                                    hover:opacity-90 transition-opacity shadow-md"
-                                                style={{ backgroundColor: spot.color }}
+                                                className="inline-block px-4 py-2 text-sm font-semibold rounded-full text-white
+                                                    hover:opacity-90 transition-opacity"
+                                                style={{
+                                                    background: 'linear-gradient(145deg, #8B4513 0%, #5c3d2e 100%)',
+                                                }}
                                             >
                                                 Learn More →
                                             </span>
@@ -338,8 +381,15 @@ export default function TreasureHuntMap() {
                         animate={{ rotate: (mousePosition.x - pierrePosition.x) * 2 }}
                     >
                         <div className="relative -translate-x-1/2 -translate-y-1/2">
-                            <div className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-3xl md:text-4xl 
-                                drop-shadow-lg bg-white/90 rounded-full border-2 border-gold-400 shadow-lg">
+                            <div
+                                className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center text-2xl md:text-3xl 
+                                    drop-shadow-lg rounded-full"
+                                style={{
+                                    background: 'linear-gradient(145deg, #f5e6d3 0%, #e8d4b8 100%)',
+                                    border: '3px solid #8B4513',
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                                }}
+                            >
                                 🧑‍✈️
                             </div>
                             <AnimatePresence>
@@ -348,9 +398,14 @@ export default function TreasureHuntMap() {
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.8 }}
-                                        className="absolute -top-9 left-1/2 -translate-x-1/2 
-                                            bg-white px-3 py-1 rounded-full shadow-lg text-xs font-medium
-                                            text-navy-700 whitespace-nowrap border border-gold-200"
+                                        className="absolute -top-8 left-1/2 -translate-x-1/2 
+                                            px-2 py-1 rounded text-xs font-medium whitespace-nowrap"
+                                        style={{
+                                            background: 'linear-gradient(145deg, #f5e6d3 0%, #e8d4b8 100%)',
+                                            color: '#5c3d2e',
+                                            border: '2px solid #8B4513',
+                                            fontFamily: 'serif',
+                                        }}
                                     >
                                         Click a spot! ✨
                                     </motion.div>
@@ -371,17 +426,26 @@ export default function TreasureHuntMap() {
             </div>
 
             {/* Mobile-friendly list below map */}
-            <div className="container mx-auto px-4 mt-12 md:hidden">
-                <div className="grid grid-cols-2 gap-4">
+            <div className="container mx-auto px-4 mt-8 md:hidden">
+                <div className="grid grid-cols-2 gap-3">
                     {serviceSpots.map((spot) => (
                         <Link
                             key={spot.id}
                             href={spot.link}
-                            className="p-4 bg-white rounded-xl shadow-md border border-beige-200
+                            className="p-3 rounded-lg shadow-md
                                 hover:shadow-lg transition-shadow text-center"
+                            style={{
+                                background: 'linear-gradient(145deg, #f5e6d3 0%, #e8d4b8 100%)',
+                                border: '2px solid #8B4513',
+                            }}
                         >
-                            <div className="text-3xl mb-2">{spot.icon}</div>
-                            <h3 className="font-bold text-navy-700 text-sm">{spot.name}</h3>
+                            <div className="text-2xl mb-1">{spot.icon}</div>
+                            <h3
+                                className="font-bold text-sm"
+                                style={{ color: '#5c3d2e', fontFamily: 'serif' }}
+                            >
+                                {spot.name}
+                            </h3>
                         </Link>
                     ))}
                 </div>

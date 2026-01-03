@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { useGLTF, OrbitControls } from '@react-three/drei';
+import * as THREE from 'three';
 
 // Service spots on the Paris "treasure map"
 const serviceSpots = [
@@ -57,11 +59,94 @@ const serviceSpots = [
 // Trail path connecting the spots (SVG path coordinates)
 const trailPath = "M 20 35 Q 35 20, 50 55 T 75 25 Q 85 45, 80 65 L 30 70";
 
+// 3D Pierre Model Component
+interface PierreModelProps {
+    mousePosition: { x: number; y: number };
+}
+
+function PierreModel({ mousePosition }: PierreModelProps) {
+    const groupRef = useRef<THREE.Group>(null);
+    const { scene } = useGLTF('/models/pierre-mascot.glb');
+
+    // Clone the scene to avoid issues with reusing
+    const clonedScene = React.useMemo(() => scene.clone(), [scene]);
+
+    useFrame(() => {
+        if (groupRef.current) {
+            // Convert 2D mouse position (0-100 range) to 3D position
+            const targetX = (mousePosition.x - 50) / 15;
+            const targetY = -(mousePosition.y - 50) / 15;
+
+            // Smooth follow
+            groupRef.current.position.x = THREE.MathUtils.lerp(
+                groupRef.current.position.x,
+                targetX,
+                0.08
+            );
+            groupRef.current.position.y = THREE.MathUtils.lerp(
+                groupRef.current.position.y,
+                targetY,
+                0.08
+            );
+
+            // Tilt based on movement direction
+            const targetRotationZ = (targetX - groupRef.current.position.x) * 0.5;
+            groupRef.current.rotation.z = THREE.MathUtils.lerp(
+                groupRef.current.rotation.z,
+                targetRotationZ,
+                0.1
+            );
+        }
+    });
+
+    return (
+        <group ref={groupRef} position={[0, 0, 0]}>
+            <primitive
+                object={clonedScene}
+                scale={0.5}  // Adjust scale based on your model size
+                rotation={[0, Math.PI, 0]} // Adjust rotation if needed
+            />
+        </group>
+    );
+}
+
+// Preload the model
+useGLTF.preload('/models/pierre-mascot.glb');
+
+// 3D Canvas for Pierre
+function Pierre3DCanvas({ mousePosition }: { mousePosition: { x: number; y: number } }) {
+    return (
+        <Canvas
+            camera={{ position: [0, 0, 5], fov: 50 }}
+            style={{ background: 'transparent' }}
+        >
+            <ambientLight intensity={0.8} />
+            <directionalLight position={[5, 5, 5]} intensity={1} />
+            <directionalLight position={[-5, -5, 5]} intensity={0.3} />
+            <Suspense fallback={null}>
+                <PierreModel mousePosition={mousePosition} />
+            </Suspense>
+        </Canvas>
+    );
+}
+
 export default function TreasureHuntMap() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
     const [hoveredSpot, setHoveredSpot] = useState<string | null>(null);
     const [pierrePosition, setPierrePosition] = useState({ x: 50, y: 50 });
+    const [has3DModel, setHas3DModel] = useState(false);
+
+    // Check if 3D model exists
+    useEffect(() => {
+        fetch('/models/pierre-mascot.glb', { method: 'HEAD' })
+            .then((res) => {
+                setHas3DModel(res.ok);
+            })
+            .catch(() => {
+                setHas3DModel(false);
+            });
+    }, []);
 
     // Track mouse movement for Pierre to follow
     useEffect(() => {
@@ -78,7 +163,7 @@ export default function TreasureHuntMap() {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
-    // Smooth Pierre following with lag
+    // Smooth Pierre following with lag (for 2D fallback)
     useEffect(() => {
         const interval = setInterval(() => {
             setPierrePosition(prev => ({
@@ -298,57 +383,50 @@ export default function TreasureHuntMap() {
                     );
                 })}
 
-                {/* Pierre the Pilot - Mascot following cursor */}
-                <motion.div
-                    className="absolute z-20 pointer-events-none"
-                    style={{
-                        left: `${pierrePosition.x}%`,
-                        top: `${pierrePosition.y}%`,
-                    }}
-                    animate={{
-                        rotate: (mousePosition.x - pierrePosition.x) * 2,
-                    }}
-                >
-                    <div className="relative -translate-x-1/2 -translate-y-1/2">
-                        {/* If you have Pierre image, use Image component */}
-                        {/* For now, using a placeholder character */}
-                        <div className="w-20 h-20 relative">
-                            {/* Try to load Pierre image, fallback to emoji character */}
-                            <Image
-                                src="/images/pierre-mascot.png"
-                                alt="Pierre the Pilot"
-                                width={80}
-                                height={80}
-                                className="object-contain drop-shadow-lg"
-                                onError={(e) => {
-                                    // Fallback handled by displaying emoji instead
-                                    e.currentTarget.style.display = 'none';
-                                }}
-                            />
-                            {/* Fallback emoji pilot */}
-                            <div className="absolute inset-0 flex items-center justify-center text-5xl 
-                                drop-shadow-lg animate-bounce-subtle">
+                {/* Pierre the Pilot - 3D or 2D fallback */}
+                {has3DModel ? (
+                    /* 3D Pierre Canvas */
+                    <div
+                        className="absolute inset-0 z-20 pointer-events-none"
+                    >
+                        <Pierre3DCanvas mousePosition={mousePosition} />
+                    </div>
+                ) : (
+                    /* 2D Fallback Pierre */
+                    <motion.div
+                        className="absolute z-20 pointer-events-none"
+                        style={{
+                            left: `${pierrePosition.x}%`,
+                            top: `${pierrePosition.y}%`,
+                        }}
+                        animate={{
+                            rotate: (mousePosition.x - pierrePosition.x) * 2,
+                        }}
+                    >
+                        <div className="relative -translate-x-1/2 -translate-y-1/2">
+                            <div className="w-20 h-20 flex items-center justify-center text-5xl 
+                                drop-shadow-lg">
                                 🧑‍✈️
                             </div>
-                        </div>
 
-                        {/* Speech bubble when near a spot */}
-                        <AnimatePresence>
-                            {!hoveredSpot && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8 }}
-                                    className="absolute -top-12 left-1/2 -translate-x-1/2 
-                                        bg-white px-3 py-1.5 rounded-full shadow-lg text-xs font-medium
-                                        text-navy-700 whitespace-nowrap"
-                                >
-                                    Follow me! ✨
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                </motion.div>
+                            {/* Speech bubble when not near a spot */}
+                            <AnimatePresence>
+                                {!hoveredSpot && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        className="absolute -top-12 left-1/2 -translate-x-1/2 
+                                            bg-white px-3 py-1.5 rounded-full shadow-lg text-xs font-medium
+                                            text-navy-700 whitespace-nowrap"
+                                    >
+                                        Follow me! ✨
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </motion.div>
+                )}
 
                 {/* Instructions overlay for mobile */}
                 <div className="absolute bottom-4 left-4 right-4 text-center md:hidden">

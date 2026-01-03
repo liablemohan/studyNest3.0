@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, OrbitControls } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 
 // Service spots on the Paris "treasure map"
@@ -14,7 +14,7 @@ const serviceSpots = [
         name: 'Banking',
         icon: '🏦',
         description: 'Open your French bank account with same-day activation support. We partner with student-friendly banks.',
-        position: { x: 20, y: 35 },
+        position: { x: 20, y: 45 },
         link: '/services#banking',
         color: '#3b82f6',
     },
@@ -23,7 +23,7 @@ const serviceSpots = [
         name: 'Accommodation',
         icon: '🏠',
         description: 'Find your perfect Parisian home with our trusted housing partners. Studio, shared, or residence.',
-        position: { x: 75, y: 25 },
+        position: { x: 80, y: 40 },
         link: '/services#housing',
         color: '#22c55e',
     },
@@ -32,7 +32,7 @@ const serviceSpots = [
         name: 'Travel',
         icon: '✈️',
         description: 'Navigate Paris like a local! Get your Navigo pass and discover the best student travel deals.',
-        position: { x: 50, y: 55 },
+        position: { x: 50, y: 35 },
         link: '/services#travel',
         color: '#8b5cf6',
     },
@@ -41,7 +41,7 @@ const serviceSpots = [
         name: 'SIM Card',
         icon: '📱',
         description: 'Stay connected with student-friendly mobile plans. Unlimited data, calls, and texts at student prices.',
-        position: { x: 30, y: 70 },
+        position: { x: 35, y: 55 },
         link: '/services#sim',
         color: '#ec4899',
     },
@@ -50,14 +50,14 @@ const serviceSpots = [
         name: 'Subsidies',
         icon: '💰',
         description: 'Claim up to €200/month in CAF housing subsidies. We handle the paperwork for you!',
-        position: { x: 80, y: 65 },
+        position: { x: 70, y: 60 },
         link: '/services#subsidy',
         color: '#f59e0b',
     },
 ];
 
 // Trail path connecting the spots (SVG path coordinates)
-const trailPath = "M 20 35 Q 35 20, 50 55 T 75 25 Q 85 45, 80 65 L 30 70";
+const trailPath = "M 20 45 Q 35 30, 50 35 T 80 40 Q 75 50, 70 60 L 35 55 Z";
 
 // 3D Pierre Model Component
 interface PierreModelProps {
@@ -67,59 +67,33 @@ interface PierreModelProps {
 function PierreModel({ mousePosition }: PierreModelProps) {
     const groupRef = useRef<THREE.Group>(null);
     const { scene } = useGLTF('/models/pierre-mascot.glb');
-
-    // Clone the scene to avoid issues with reusing
     const clonedScene = React.useMemo(() => scene.clone(), [scene]);
 
     useFrame(() => {
         if (groupRef.current) {
-            // Convert 2D mouse position (0-100 range) to 3D position
             const targetX = (mousePosition.x - 50) / 15;
             const targetY = -(mousePosition.y - 50) / 15;
 
-            // Smooth follow
-            groupRef.current.position.x = THREE.MathUtils.lerp(
-                groupRef.current.position.x,
-                targetX,
-                0.08
-            );
-            groupRef.current.position.y = THREE.MathUtils.lerp(
-                groupRef.current.position.y,
-                targetY,
-                0.08
-            );
+            groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, targetX, 0.08);
+            groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, 0.08);
 
-            // Tilt based on movement direction
             const targetRotationZ = (targetX - groupRef.current.position.x) * 0.5;
-            groupRef.current.rotation.z = THREE.MathUtils.lerp(
-                groupRef.current.rotation.z,
-                targetRotationZ,
-                0.1
-            );
+            groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetRotationZ, 0.1);
         }
     });
 
     return (
         <group ref={groupRef} position={[0, 0, 0]}>
-            <primitive
-                object={clonedScene}
-                scale={0.5}  // Adjust scale based on your model size
-                rotation={[0, 0, 0]} // Front facing the user
-            />
+            <primitive object={clonedScene} scale={0.5} rotation={[0, 0, 0]} />
         </group>
     );
 }
 
-// Preload the model
 useGLTF.preload('/models/pierre-mascot.glb');
 
-// 3D Canvas for Pierre
 function Pierre3DCanvas({ mousePosition }: { mousePosition: { x: number; y: number } }) {
     return (
-        <Canvas
-            camera={{ position: [0, 0, 5], fov: 50 }}
-            style={{ background: 'transparent' }}
-        >
+        <Canvas camera={{ position: [0, 0, 5], fov: 50 }} style={{ background: 'transparent' }}>
             <ambientLight intensity={0.8} />
             <directionalLight position={[5, 5, 5]} intensity={1} />
             <directionalLight position={[-5, -5, 5]} intensity={0.3} />
@@ -134,21 +108,16 @@ export default function TreasureHuntMap() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
     const [hoveredSpot, setHoveredSpot] = useState<string | null>(null);
+    const [clickedSpot, setClickedSpot] = useState<string | null>(null);
     const [pierrePosition, setPierrePosition] = useState({ x: 50, y: 50 });
     const [has3DModel, setHas3DModel] = useState(false);
 
-    // Check if 3D model exists
     useEffect(() => {
         fetch('/models/pierre-mascot.glb', { method: 'HEAD' })
-            .then((res) => {
-                setHas3DModel(res.ok);
-            })
-            .catch(() => {
-                setHas3DModel(false);
-            });
+            .then((res) => setHas3DModel(res.ok))
+            .catch(() => setHas3DModel(false));
     }, []);
 
-    // Track mouse movement for Pierre to follow
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
             if (containerRef.current) {
@@ -158,12 +127,10 @@ export default function TreasureHuntMap() {
                 setMousePosition({ x: Math.max(5, Math.min(95, x)), y: Math.max(5, Math.min(95, y)) });
             }
         };
-
         window.addEventListener('mousemove', handleMouseMove);
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
-    // Smooth Pierre following with lag (for 2D fallback)
     useEffect(() => {
         const interval = setInterval(() => {
             setPierrePosition(prev => ({
@@ -171,11 +138,9 @@ export default function TreasureHuntMap() {
                 y: prev.y + (mousePosition.y - prev.y) * 0.08,
             }));
         }, 16);
-
         return () => clearInterval(interval);
     }, [mousePosition]);
 
-    // Check if Pierre is near a spot
     useEffect(() => {
         const nearSpot = serviceSpots.find(spot => {
             const distance = Math.sqrt(
@@ -187,8 +152,12 @@ export default function TreasureHuntMap() {
         setHoveredSpot(nearSpot?.id || null);
     }, [pierrePosition]);
 
+    const handleSpotClick = (spotId: string) => {
+        setClickedSpot(clickedSpot === spotId ? null : spotId);
+    };
+
     return (
-        <section className="relative py-20 bg-gradient-to-b from-beige-100 via-beige-50 to-white overflow-hidden">
+        <section className="relative py-20 bg-gradient-to-b from-beige-100 via-beige-50 to-white overflow-visible">
             {/* Section header */}
             <div className="container mx-auto px-4 mb-12 text-center">
                 <motion.span
@@ -216,211 +185,249 @@ export default function TreasureHuntMap() {
                     transition={{ delay: 0.2 }}
                     className="text-lg text-navy-600/70 max-w-2xl mx-auto"
                 >
-                    Move your cursor to guide Pierre through your Parisian adventure.
-                    Hover over each stop to discover how we help!
+                    Click on each destination to discover how StudyNest helps you!
                 </motion.p>
             </div>
 
-            {/* Interactive Map Area */}
+            {/* Interactive Map Area - No overflow hidden */}
             <div
                 ref={containerRef}
-                className="relative mx-auto max-w-6xl aspect-[16/9] rounded-3xl overflow-hidden 
-                    bg-gradient-to-br from-beige-200 via-beige-100 to-gold-50
-                    border-4 border-beige-300 shadow-2xl cursor-none"
+                className="relative mx-auto max-w-6xl aspect-[16/9] rounded-3xl 
+                    border-4 border-gold-300 shadow-2xl cursor-crosshair"
+                style={{
+                    background: 'linear-gradient(180deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%)',
+                }}
             >
-                {/* Map background pattern */}
-                <div className="absolute inset-0 opacity-20">
-                    <div className="absolute inset-0" style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231e3a5f' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-                    }} />
-                </div>
+                {/* Paris Skyline Background */}
+                <div className="absolute inset-0 pointer-events-none">
+                    <svg viewBox="0 0 1200 400" className="w-full h-full" preserveAspectRatio="xMidYMax slice">
+                        {/* Sky gradient */}
+                        <defs>
+                            <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stopColor="#fef3c7" />
+                                <stop offset="100%" stopColor="#fcd34d" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="1200" height="400" fill="url(#skyGradient)" />
 
-                {/* Paris landmarks silhouette (decorative) */}
-                <div className="absolute bottom-0 left-0 right-0 h-32 opacity-10">
-                    <svg viewBox="0 0 1200 150" className="w-full h-full" fill="#1e3a5f">
-                        {/* Eiffel Tower */}
-                        <path d="M580 150 L600 20 L620 150 M585 80 L615 80 M575 120 L625 120" strokeWidth="8" stroke="#1e3a5f" fill="none" />
-                        {/* Buildings */}
-                        <rect x="100" y="100" width="60" height="50" />
-                        <rect x="180" y="80" width="40" height="70" />
-                        <rect x="240" y="110" width="50" height="40" />
-                        <rect x="700" y="90" width="80" height="60" />
-                        <rect x="800" y="100" width="50" height="50" />
-                        <rect x="900" y="70" width="60" height="80" />
-                        <rect x="1000" y="110" width="70" height="40" />
+                        {/* Distant buildings - left side */}
+                        <g fill="#1e3a5f" opacity="0.15">
+                            <rect x="0" y="280" width="40" height="120" />
+                            <rect x="50" y="260" width="35" height="140" />
+                            <rect x="95" y="290" width="50" height="110" />
+                            <rect x="155" y="250" width="30" height="150" />
+                            <rect x="195" y="270" width="45" height="130" />
+                        </g>
+
+                        {/* Eiffel Tower - center left */}
+                        <g fill="none" stroke="#1e3a5f" strokeWidth="4" opacity="0.25">
+                            <path d="M350 400 L400 100 L450 400" />
+                            <path d="M360 350 L440 350" />
+                            <path d="M370 280 L430 280" />
+                            <path d="M385 200 L415 200" />
+                            <path d="M395 130 L405 130" />
+                        </g>
+                        <rect x="395" y="90" width="10" height="20" fill="#1e3a5f" opacity="0.25" />
+
+                        {/* Notre-Dame - center */}
+                        <g fill="#1e3a5f" opacity="0.2">
+                            <rect x="550" y="280" width="100" height="120" />
+                            <polygon points="550,280 600,220 650,280" />
+                            <rect x="570" y="240" width="15" height="40" />
+                            <rect x="615" y="240" width="15" height="40" />
+                        </g>
+
+                        {/* Sacré-Cœur - right side */}
+                        <g fill="#1e3a5f" opacity="0.18">
+                            <rect x="800" y="290" width="80" height="110" />
+                            <circle cx="840" cy="270" r="30" />
+                            <circle cx="815" cy="285" r="18" />
+                            <circle cx="865" cy="285" r="18" />
+                        </g>
+
+                        {/* Arc de Triomphe - far right */}
+                        <g fill="#1e3a5f" opacity="0.15">
+                            <path d="M950 400 L950 300 Q990 270, 1030 300 L1030 400" />
+                            <rect x="970" y="320" width="40" height="80" fill="#fcd34d" />
+                        </g>
+
+                        {/* More distant buildings - right */}
+                        <g fill="#1e3a5f" opacity="0.12">
+                            <rect x="1070" y="285" width="35" height="115" />
+                            <rect x="1115" y="270" width="45" height="130" />
+                            <rect x="1170" y="290" width="30" height="110" />
+                        </g>
+
+                        {/* Trees/Parks */}
+                        <g fill="#1e3a5f" opacity="0.1">
+                            <ellipse cx="280" cy="380" rx="40" ry="25" />
+                            <ellipse cx="720" cy="385" rx="50" ry="20" />
+                            <ellipse cx="500" cy="390" rx="35" ry="15" />
+                        </g>
                     </svg>
                 </div>
 
-                {/* Treasure trail SVG */}
+                {/* Dotted trail connecting spots */}
                 <svg
                     className="absolute inset-0 w-full h-full pointer-events-none"
                     viewBox="0 0 100 100"
                     preserveAspectRatio="none"
                 >
-                    {/* Dotted trail path */}
                     <motion.path
                         d={trailPath}
                         fill="none"
-                        stroke="#d69e2e"
-                        strokeWidth="0.5"
+                        stroke="#92400e"
+                        strokeWidth="0.8"
                         strokeDasharray="2 2"
+                        strokeLinecap="round"
                         initial={{ pathLength: 0 }}
                         whileInView={{ pathLength: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 2, ease: "easeInOut" }}
-                    />
-
-                    {/* Glowing trail effect */}
-                    <motion.path
-                        d={trailPath}
-                        fill="none"
-                        stroke="#fbbf24"
-                        strokeWidth="0.3"
-                        strokeDasharray="1 3"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        whileInView={{ pathLength: 1, opacity: 0.5 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 2.5, ease: "easeInOut" }}
                     />
                 </svg>
 
                 {/* Service Spots */}
                 {serviceSpots.map((spot) => {
                     const isHovered = hoveredSpot === spot.id;
-                    const isFaded = hoveredSpot !== null && !isHovered;
+                    const isClicked = clickedSpot === spot.id;
+                    const isFaded = (hoveredSpot !== null || clickedSpot !== null) && !isHovered && !isClicked;
 
                     return (
                         <div
                             key={spot.id}
-                            className="absolute transform -translate-x-1/2 -translate-y-1/2 z-10"
+                            className="absolute transform -translate-x-1/2 -translate-y-1/2"
                             style={{
                                 left: `${spot.position.x}%`,
                                 top: `${spot.position.y}%`,
+                                zIndex: isClicked || isHovered ? 50 : 10,
                             }}
                         >
-                            {/* Spot marker */}
-                            <Link href={spot.link}>
-                                <motion.div
-                                    className="relative cursor-pointer"
-                                    animate={{
-                                        scale: isHovered ? 1.3 : isFaded ? 0.8 : 1,
-                                        opacity: isFaded ? 0.3 : 1,
-                                    }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    {/* Glow ring */}
+                            {/* Clickable spot marker */}
+                            <motion.div
+                                className="relative cursor-pointer"
+                                animate={{
+                                    scale: isHovered || isClicked ? 1.2 : isFaded ? 0.8 : 1,
+                                    opacity: isFaded ? 0.4 : 1,
+                                }}
+                                transition={{ duration: 0.3 }}
+                                onClick={() => handleSpotClick(spot.id)}
+                            >
+                                {/* Glow ring */}
+                                {(isHovered || isClicked) && (
                                     <motion.div
                                         className="absolute inset-0 rounded-full"
                                         style={{ backgroundColor: spot.color }}
                                         animate={{
-                                            scale: isHovered ? [1, 1.8, 1.8] : 1,
-                                            opacity: isHovered ? [0.5, 0, 0] : 0,
+                                            scale: [1, 1.8, 1.8],
+                                            opacity: [0.5, 0, 0],
                                         }}
-                                        transition={{ duration: 1, repeat: isHovered ? Infinity : 0 }}
+                                        transition={{ duration: 1, repeat: Infinity }}
                                     />
+                                )}
 
-                                    {/* Main spot */}
-                                    <div
-                                        className="w-16 h-16 rounded-full flex items-center justify-center text-3xl
-                                            shadow-lg border-4 border-white transition-all duration-300"
-                                        style={{
-                                            backgroundColor: isHovered ? spot.color : '#fff',
-                                            boxShadow: isHovered ? `0 0 30px ${spot.color}80` : undefined,
-                                        }}
-                                    >
-                                        {spot.icon}
-                                    </div>
+                                {/* Main spot */}
+                                <div
+                                    className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-2xl md:text-3xl
+                                        shadow-lg border-4 border-white transition-all duration-300"
+                                    style={{
+                                        backgroundColor: isHovered || isClicked ? spot.color : '#fff',
+                                        boxShadow: isHovered || isClicked ? `0 0 30px ${spot.color}80` : '0 4px 15px rgba(0,0,0,0.2)',
+                                    }}
+                                >
+                                    {spot.icon}
+                                </div>
 
-                                    {/* Label */}
-                                    <motion.div
-                                        className="absolute top-full left-1/2 -translate-x-1/2 mt-2 
-                                            whitespace-nowrap text-sm font-bold text-navy-700"
-                                        animate={{ opacity: isFaded ? 0.3 : 1 }}
-                                    >
-                                        {spot.name}
-                                    </motion.div>
+                                {/* Label below icon */}
+                                <motion.div
+                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 
+                                        whitespace-nowrap text-xs md:text-sm font-bold text-navy-800
+                                        bg-white/90 px-2 py-1 rounded-full shadow-sm"
+                                    animate={{ opacity: isFaded ? 0.3 : 1 }}
+                                >
+                                    {spot.name}
                                 </motion.div>
-                            </Link>
+                            </motion.div>
 
-                            {/* Popup */}
+                            {/* Popup Card - appears when clicked */}
                             <AnimatePresence>
-                                {isHovered && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                                        className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 
-                                            bg-white rounded-2xl p-5 shadow-2xl w-72 text-center z-50
-                                            border-2"
-                                        style={{ borderColor: spot.color }}
-                                    >
-                                        <div
-                                            className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center text-2xl"
-                                            style={{ backgroundColor: `${spot.color}20` }}
+                                {isClicked && (
+                                    <Link href={spot.link}>
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                                            className="absolute left-1/2 -translate-x-1/2 mt-16
+                                                bg-white rounded-2xl p-5 shadow-2xl w-64 md:w-72 text-center
+                                                border-2 cursor-pointer hover:shadow-3xl transition-shadow"
+                                            style={{
+                                                borderColor: spot.color,
+                                                top: '100%',
+                                            }}
+                                            onClick={(e) => e.stopPropagation()}
                                         >
-                                            {spot.icon}
-                                        </div>
-                                        <h3 className="font-bold text-navy-700 text-lg mb-2">{spot.name}</h3>
-                                        <p className="text-navy-600/70 text-sm mb-3">{spot.description}</p>
-                                        <span
-                                            className="inline-block px-4 py-2 text-xs font-semibold rounded-full text-white"
-                                            style={{ backgroundColor: spot.color }}
-                                        >
-                                            Click to explore →
-                                        </span>
+                                            {/* Arrow pointing up */}
+                                            <div
+                                                className="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0 
+                                                    border-l-8 border-r-8 border-b-8 
+                                                    border-l-transparent border-r-transparent"
+                                                style={{ borderBottomColor: spot.color }}
+                                            />
 
-                                        {/* Arrow pointing down */}
-                                        <div
-                                            className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 
-                                                border-l-8 border-r-8 border-t-8 
-                                                border-l-transparent border-r-transparent"
-                                            style={{ borderTopColor: spot.color }}
-                                        />
-                                    </motion.div>
+                                            <div
+                                                className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center text-2xl"
+                                                style={{ backgroundColor: `${spot.color}20` }}
+                                            >
+                                                {spot.icon}
+                                            </div>
+                                            <h3 className="font-bold text-navy-700 text-lg mb-2">{spot.name}</h3>
+                                            <p className="text-navy-600/70 text-sm mb-4">{spot.description}</p>
+                                            <span
+                                                className="inline-block px-5 py-2.5 text-sm font-semibold rounded-full text-white
+                                                    hover:opacity-90 transition-opacity shadow-md"
+                                                style={{ backgroundColor: spot.color }}
+                                            >
+                                                Learn More →
+                                            </span>
+                                        </motion.div>
+                                    </Link>
                                 )}
                             </AnimatePresence>
                         </div>
                     );
                 })}
 
-                {/* Pierre the Pilot - 3D or 2D fallback */}
+                {/* Pierre the Pilot */}
                 {has3DModel ? (
-                    /* 3D Pierre Canvas */
-                    <div
-                        className="absolute inset-0 z-20 pointer-events-none"
-                    >
+                    <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 30 }}>
                         <Pierre3DCanvas mousePosition={mousePosition} />
                     </div>
                 ) : (
-                    /* 2D Fallback Pierre */
                     <motion.div
-                        className="absolute z-20 pointer-events-none"
+                        className="absolute pointer-events-none"
                         style={{
                             left: `${pierrePosition.x}%`,
                             top: `${pierrePosition.y}%`,
+                            zIndex: 30,
                         }}
-                        animate={{
-                            rotate: (mousePosition.x - pierrePosition.x) * 2,
-                        }}
+                        animate={{ rotate: (mousePosition.x - pierrePosition.x) * 2 }}
                     >
                         <div className="relative -translate-x-1/2 -translate-y-1/2">
-                            <div className="w-20 h-20 flex items-center justify-center text-5xl 
-                                drop-shadow-lg">
+                            <div className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center text-4xl md:text-5xl 
+                                drop-shadow-lg bg-white/80 rounded-full border-2 border-gold-400 shadow-lg">
                                 🧑‍✈️
                             </div>
-
-                            {/* Speech bubble when not near a spot */}
                             <AnimatePresence>
-                                {!hoveredSpot && (
+                                {!hoveredSpot && !clickedSpot && (
                                     <motion.div
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.8 }}
-                                        className="absolute -top-12 left-1/2 -translate-x-1/2 
+                                        className="absolute -top-10 left-1/2 -translate-x-1/2 
                                             bg-white px-3 py-1.5 rounded-full shadow-lg text-xs font-medium
-                                            text-navy-700 whitespace-nowrap"
+                                            text-navy-700 whitespace-nowrap border border-gold-200"
                                     >
-                                        Follow me! ✨
+                                        Click a spot! ✨
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -428,12 +435,14 @@ export default function TreasureHuntMap() {
                     </motion.div>
                 )}
 
-                {/* Instructions overlay for mobile */}
-                <div className="absolute bottom-4 left-4 right-4 text-center md:hidden">
-                    <p className="text-sm text-navy-600/70 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2">
-                        Tap on spots to explore services
-                    </p>
-                </div>
+                {/* Click outside to close popup */}
+                {clickedSpot && (
+                    <div
+                        className="absolute inset-0"
+                        style={{ zIndex: 5 }}
+                        onClick={() => setClickedSpot(null)}
+                    />
+                )}
             </div>
 
             {/* Mobile-friendly list below map */}

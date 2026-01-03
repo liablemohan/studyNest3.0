@@ -92,7 +92,7 @@ export default function Founders() {
 
                             <div className="p-6">
                                 <h3 className="text-xl font-bold text-navy-700">{founder.name}</h3>
-                                <p className="text-gold-600 font-medium mb-4">{founder.role}</p>
+                                <p className="text-amber-800 font-semibold mb-4">{founder.role}</p>
                                 <p className="text-navy-600/70 text-sm leading-relaxed mb-6">
                                     {founder.bio}
                                 </p>

@@ -152,8 +152,8 @@ export default function PartnerShowcase() {
                             key={category}
                             onClick={() => setSelectedCategory(category)}
                             className={`px-5 py-2 rounded-full font-medium transition-all ${selectedCategory === category
-                                    ? 'bg-navy-700 text-white'
-                                    : 'bg-beige-100 text-navy-600 hover:bg-beige-200'
+                                ? 'bg-navy-700 text-white'
+                                : 'bg-beige-100 text-navy-600 hover:bg-beige-200'
                                 }`}
                         >
                             {category}
@@ -205,7 +205,7 @@ export default function PartnerShowcase() {
                                     <h4 className="text-xl font-bold text-navy-700 mb-2">{partner.name}</h4>
                                     <p className="text-navy-600/70 text-sm mb-4">{partner.description}</p>
 
-                                    <div className="flex items-center gap-2 text-gold-600 font-medium text-sm">
+                                    <div className="flex items-center gap-2 text-navy-700 font-semibold text-sm">
                                         Learn more <ChevronRight className="w-4 h-4" />
                                     </div>
                                 </div>

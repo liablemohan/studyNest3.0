@@ -627,11 +627,11 @@ export default function HeroScene() {
                     transition={{ duration: 0.8, delay: 0.3 }}
                     className="text-center px-4"
                 >
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 font-display drop-shadow-2xl">
+                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 font-display" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.8), 0 2px 10px rgba(0,0,0,0.6)' }}>
                         Your Parisian
-                        <span className="block text-gold-400 drop-shadow-lg">Adventure Awaits</span>
+                        <span className="block text-gold-400" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}>Adventure Awaits</span>
                     </h1>
-                    <p className="text-xl md:text-2xl text-beige-200 max-w-2xl mx-auto mb-10 drop-shadow-md">
+                    <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto mb-10" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.7)' }}>
                         Navigate your student journey with Pierre as your guide through housing,
                         banking, and everything in between.
                     </p>
@@ -644,7 +644,8 @@ export default function HeroScene() {
                         </Link>
                         <Link
                             href="/about"
-                            className="btn btn-outline border-white text-white hover:bg-white hover:text-navy-700 text-lg px-8 py-4"
+                            className="btn border-2 border-white text-white hover:bg-white hover:text-navy-700 text-lg px-8 py-4"
+                            style={{ textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}
                         >
                             Our Story
                         </Link>

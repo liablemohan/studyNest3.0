@@ -168,7 +168,7 @@ export default function PackageCards() {
                             {/* Popular badge */}
                             {pkg.popular && (
                                 <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-gold-400 to-gold-500 
-                              text-navy-900 text-center py-1.5 text-sm font-semibold">
+                              text-navy-900 text-center py-1.5 text-sm font-bold">
                                     ⭐ Most Popular
                                 </div>
                             )}
@@ -216,11 +216,11 @@ export default function PackageCards() {
                                         </div>
                                     ))}
                                     {pkg.notIncluded.map((feature) => (
-                                        <div key={feature} className="flex items-start gap-3 opacity-40">
-                                            <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                <span className="text-xs text-gray-400">—</span>
+                                        <div key={feature} className="flex items-start gap-3 opacity-60">
+                                            <div className="w-5 h-5 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                <span className="text-xs text-gray-500">—</span>
                                             </div>
-                                            <span className="text-sm text-navy-400">{feature}</span>
+                                            <span className="text-sm text-navy-500">{feature}</span>
                                         </div>
                                     ))}
                                 </div>

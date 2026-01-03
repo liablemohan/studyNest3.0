@@ -104,7 +104,7 @@ function PierreModel({ mousePosition }: PierreModelProps) {
             <primitive
                 object={clonedScene}
                 scale={0.5}  // Adjust scale based on your model size
-                rotation={[0, Math.PI, 0]} // Adjust rotation if needed
+                rotation={[0, 0, 0]} // Front facing the user
             />
         </group>
     );

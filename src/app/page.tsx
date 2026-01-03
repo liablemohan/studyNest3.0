@@ -8,7 +8,7 @@ import HowItWorks from '@/components/landing/HowItWorks';
 import Testimonials from '@/components/landing/Testimonials';
 import CTASection from '@/components/landing/CTASection';
 
-// Dynamic import for 3D scene to avoid SSR issues
+// Dynamic import for Hero to avoid SSR issues with video
 const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
   ssr: false,
   loading: () => (
@@ -21,13 +21,29 @@ const HeroScene = dynamic(() => import('@/components/hero/HeroScene'), {
   ),
 });
 
+// Dynamic import for TreasureHuntMap 
+const TreasureHuntMap = dynamic(() => import('@/components/hero/TreasureHuntMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full py-20 bg-beige-100 flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-gold-400 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-navy-600">Loading treasure map...</p>
+      </div>
+    </div>
+  ),
+});
+
 export default function Home() {
   return (
     <main>
       <Header />
 
-      {/* 3D Hero Section */}
+      {/* Video Hero Section */}
       <HeroScene />
+
+      {/* Interactive Treasure Hunt Map - NEW */}
+      <TreasureHuntMap />
 
       {/* Achievements & Stats */}
       <Achievements />

@@ -11,8 +11,8 @@ import Button from './Button';
 const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/services', label: 'Services' },
-    { href: '/about', label: 'About Us' },
     { href: '/partners', label: 'Partners' },
+    { href: '/about', label: 'About Us' },
 ];
 
 export default function Header() {
@@ -32,10 +32,10 @@ export default function Header() {
     return (
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                    ? 'bg-white/90 backdrop-blur-lg shadow-md py-3'
-                    : isLandingPage
-                        ? 'bg-transparent py-5'
-                        : 'bg-beige-100 py-5'
+                ? 'bg-white/90 backdrop-blur-lg shadow-md py-3'
+                : isLandingPage
+                    ? 'bg-transparent py-5'
+                    : 'bg-beige-100 py-5'
                 }`}
         >
             <div className="container mx-auto px-4">
@@ -66,10 +66,10 @@ export default function Header() {
                                 key={link.href}
                                 href={link.href}
                                 className={`relative font-medium transition-colors hover:text-gold-500 ${pathname === link.href
-                                        ? 'text-gold-500'
-                                        : isScrolled || !isLandingPage
-                                            ? 'text-navy-700'
-                                            : 'text-white'
+                                    ? 'text-gold-500'
+                                    : isScrolled || !isLandingPage
+                                        ? 'text-navy-700'
+                                        : 'text-white'
                                     }`}
                             >
                                 {link.label}
@@ -93,8 +93,8 @@ export default function Header() {
                     {/* Mobile Menu Button */}
                     <button
                         className={`md:hidden p-2 rounded-lg transition-colors ${isScrolled || !isLandingPage
-                                ? 'text-navy-700 hover:bg-navy-100'
-                                : 'text-white hover:bg-white/10'
+                            ? 'text-navy-700 hover:bg-navy-100'
+                            : 'text-white hover:bg-white/10'
                             }`}
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
@@ -119,8 +119,8 @@ export default function Header() {
                                     href={link.href}
                                     onClick={() => setIsMobileMenuOpen(false)}
                                     className={`block py-3 px-4 rounded-xl font-medium transition-colors ${pathname === link.href
-                                            ? 'bg-gold-100 text-gold-600'
-                                            : 'text-navy-700 hover:bg-beige-100'
+                                        ? 'bg-gold-100 text-gold-600'
+                                        : 'text-navy-700 hover:bg-beige-100'
                                         }`}
                                 >
                                     {link.label}

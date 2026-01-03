@@ -75,7 +75,7 @@ export default function CTASection() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.3 }}
-                            className="text-lg text-beige-200/80 max-w-2xl mx-auto mb-8"
+                            className="text-lg text-white/80 max-w-2xl mx-auto mb-8"
                         >
                             Join thousands of international students who chose the stress-free way
                             to start their Parisian adventure. Book a free consultation today.
@@ -112,7 +112,7 @@ export default function CTASection() {
                             whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.5 }}
-                            className="mt-8 flex items-center justify-center gap-2 text-beige-300/60"
+                            className="mt-8 flex items-center justify-center gap-2 text-white/70"
                         >
                             <span className="flex items-center gap-1">
                                 <span className="w-2 h-2 rounded-full bg-green-400" />

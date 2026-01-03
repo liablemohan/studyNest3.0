@@ -277,7 +277,7 @@ export default function PartnerShowcase() {
                                             <span className="inline-block px-2 py-0.5 bg-white/20 rounded text-sm mb-2">
                                                 {selectedPartner.category}
                                             </span>
-                                            <h3 className="text-2xl font-bold">{selectedPartner.name}</h3>
+                                            <h3 className="text-2xl font-bold text-white">{selectedPartner.name}</h3>
                                         </div>
                                     </div>
                                 </div>

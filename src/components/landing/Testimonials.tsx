@@ -58,7 +58,7 @@ export default function Testimonials() {
                          rounded-full text-sm font-semibold mb-4">
                         Student Stories
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                         What Our <span className="text-gold-400">Students</span> Say
                     </h2>
                     <p className="text-lg text-white/80 max-w-2xl mx-auto">

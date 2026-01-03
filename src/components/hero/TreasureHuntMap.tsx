@@ -158,15 +158,15 @@ export default function TreasureHuntMap() {
     };
 
     return (
-        <section className="relative py-16 bg-[#4a3728] overflow-visible">
-            {/* Section header - white text on dark brown background */}
+        <section className="relative py-16 bg-gradient-to-b from-beige-100 via-beige-50 to-white overflow-visible">
+            {/* Section header */}
             <div className="container mx-auto px-4 mb-8 text-center">
                 <motion.span
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="inline-block px-4 py-1.5 bg-amber-100/20 text-amber-100 
-                        rounded-full text-sm font-semibold mb-4 border border-amber-200/30"
+                    className="inline-block px-4 py-1.5 bg-navy-100 text-navy-700 
+                        rounded-full text-sm font-semibold mb-4"
                 >
                     Your Student Journey
                 </motion.span>
@@ -175,16 +175,16 @@ export default function TreasureHuntMap() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.1 }}
-                    className="text-4xl md:text-5xl font-bold text-white mb-4"
+                    className="text-4xl md:text-5xl font-bold text-navy-700 mb-4"
                 >
-                    Aventure Académique <span className="text-amber-300">Parisienne</span>
+                    Aventure Académique <span className="text-gold-500">Parisienne</span>
                 </motion.h2>
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    className="text-lg text-amber-100/80 max-w-2xl mx-auto"
+                    className="text-lg text-navy-600/70 max-w-2xl mx-auto"
                 >
                     Click on each destination to discover how StudyNest helps you!
                 </motion.p>

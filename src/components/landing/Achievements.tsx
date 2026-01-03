@@ -251,7 +251,7 @@ export default function Achievements() {
                                 <achievement.icon className="w-7 h-7 text-gold-400" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold mb-2">{achievement.title}</h3>
+                                <h3 className="text-xl font-bold mb-2 text-white">{achievement.title}</h3>
                                 <p className="text-beige-200/80">{achievement.description}</p>
                             </div>
                         </div>

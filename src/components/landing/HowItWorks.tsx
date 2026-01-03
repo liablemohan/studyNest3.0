@@ -99,18 +99,12 @@ export default function HowItWorks() {
     const runAnimations = useCallback(async () => {
         const anime = await import('animejs');
 
-        // Create timeline for coordinated animations
-        const timeline = anime.createTimeline({
-            defaults: {
-                easing: 'outExpo',
-            }
-        });
-
         // Animate the connection line growing
         if (lineRef.current) {
-            timeline.add(lineRef.current, {
+            anime.animate(lineRef.current, {
                 scaleX: [0, 1],
                 duration: 800,
+                easing: 'outExpo',
             });
         }
 
@@ -118,40 +112,47 @@ export default function HowItWorks() {
         if (stepsRef.current) {
             const cards = stepsRef.current.querySelectorAll('.step-card');
             cards.forEach((card, i) => {
-                timeline.add(card, {
+                anime.animate(card, {
                     translateY: [60, 0],
                     opacity: [0, 1],
                     duration: 600,
-                }, i === 0 ? '-=400' : `-=${600 - 150}`);
+                    delay: 200 + i * 150,
+                    easing: 'outExpo',
+                });
             });
 
             // Animate step numbers popping in
             const numbers = stepsRef.current.querySelectorAll('.step-number');
             numbers.forEach((num, i) => {
-                timeline.add(num, {
+                anime.animate(num, {
                     scale: [0, 1],
                     duration: 400,
-                }, i === 0 ? '-=800' : `-=${400 - 150}`);
+                    delay: 400 + i * 150,
+                    easing: 'outBack',
+                });
             });
 
             // Animate arrow connectors
             const arrows = stepsRef.current.querySelectorAll('.step-arrow');
             arrows.forEach((arrow, i) => {
-                timeline.add(arrow, {
+                anime.animate(arrow, {
                     scale: [0, 1],
                     opacity: [0, 1],
                     duration: 300,
-                }, i === 0 ? '-=600' : `-=${300 - 150}`);
+                    delay: 600 + i * 150,
+                    easing: 'outExpo',
+                });
             });
 
             // Animate icons with elastic easing
             const icons = stepsRef.current.querySelectorAll('.step-icon');
             icons.forEach((icon, i) => {
-                timeline.add(icon, {
+                anime.animate(icon, {
                     scale: [0.5, 1],
                     duration: 800,
+                    delay: 300 + i * 100,
                     easing: 'outElastic(1, 0.5)',
-                }, i === 0 ? '-=800' : `-=${800 - 100}`);
+                });
             });
         }
     }, []);

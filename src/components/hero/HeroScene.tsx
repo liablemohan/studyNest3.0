@@ -7,28 +7,30 @@ import Link from 'next/link';
 export default function HeroScene() {
     return (
         <div className="relative w-full h-screen overflow-hidden">
-            {/* Video Background */}
+            {/* Dark Navy Blue Background - solid color as base */}
+            <div className="absolute inset-0 bg-navy-900" />
+
+            {/* Video Background (if available) */}
             <video
                 autoPlay
                 loop
                 muted
                 playsInline
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover opacity-30"
                 poster="/images/paris-hero-poster.jpg"
             >
                 <source src="/videos/paris-hero.mp4" type="video/mp4" />
-                {/* Fallback gradient if video doesn't load */}
             </video>
 
-            {/* Overlay gradient for better text readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-navy-900/70 via-navy-900/50 to-navy-900/80" />
+            {/* Dark navy overlay for consistent dark look */}
+            <div className="absolute inset-0 bg-gradient-to-b from-navy-900/90 via-navy-800/85 to-navy-900/95" />
 
             {/* Animated particles overlay for visual interest */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 {[...Array(20)].map((_, i) => (
                     <motion.div
                         key={i}
-                        className="absolute w-1 h-1 bg-gold-400/30 rounded-full"
+                        className="absolute w-1 h-1 bg-gold-400/40 rounded-full"
                         initial={{
                             x: `${Math.random() * 100}%`,
                             y: `${Math.random() * 100}%`,
@@ -70,12 +72,12 @@ export default function HeroScene() {
                         ✨ Your trusted partner for student life in Paris
                     </motion.span>
 
-                    {/* Main heading */}
+                    {/* Main heading - First line in WHITE for legibility */}
                     <h1
-                        className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 font-display leading-tight"
+                        className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 font-display leading-tight"
                         style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5)' }}
                     >
-                        Begin Your
+                        <span className="text-white">Begin Your</span>
                         <span
                             className="block text-gold-400"
                             style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5)' }}
@@ -103,34 +105,51 @@ export default function HeroScene() {
                         </Link>
                         <Link
                             href="/about"
-                            className="btn border-2 border-white text-white hover:bg-white hover:text-navy-700 
-                                text-lg px-8 py-4 transition-all duration-300"
-                            style={{ textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}
+                            className="btn btn-outline-light text-lg px-8 py-4 border-2 border-white/30 text-white
+                                hover:bg-white/10 hover:border-white/50 transition-all backdrop-blur-sm"
                         >
-                            Our Story
+                            Learn About Us
                         </Link>
                     </div>
-                </motion.div>
 
-                {/* Scroll indicator */}
-                <motion.div
-                    className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-                    animate={{ y: [0, 12, 0] }}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-                >
-                    <div className="w-7 h-12 rounded-full border-2 border-white/40 flex justify-center pt-2.5">
-                        <motion.div
-                            className="w-2 h-3 rounded-full bg-white/60"
-                            animate={{ opacity: [0.6, 1, 0.6] }}
-                            transition={{ duration: 1.8, repeat: Infinity }}
-                        />
-                    </div>
-                    <p className="text-white/50 text-xs mt-2 text-center">Scroll to explore</p>
+                    {/* Trust indicators */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1, duration: 0.8 }}
+                        className="mt-12 flex flex-wrap justify-center gap-8 text-white/70 text-sm"
+                    >
+                        <div className="flex items-center gap-2">
+                            <span className="text-gold-400">✓</span>
+                            <span>5000+ Students Helped</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-gold-400">✓</span>
+                            <span>Same-Day Support</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-gold-400">✓</span>
+                            <span>Trusted Partners</span>
+                        </div>
+                    </motion.div>
                 </motion.div>
             </div>
 
-            {/* Bottom gradient transition to next section */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-beige-100 to-transparent z-20" />
+            {/* Scroll indicator */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+            >
+                <motion.div
+                    animate={{ y: [0, 10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center pt-2"
+                >
+                    <motion.div className="w-1.5 h-1.5 rounded-full bg-white/70" />
+                </motion.div>
+            </motion.div>
         </div>
     );
 }

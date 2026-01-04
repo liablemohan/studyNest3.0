@@ -28,37 +28,13 @@ export default function Button({
   icon,
   iconPosition = 'left',
 }: ButtonProps) {
-  const baseStyles = `
-    inline-flex items-center justify-center gap-2 font-semibold
-    rounded-xl transition-all duration-200 ease-out
-    disabled:opacity-50 disabled:cursor-not-allowed
-    focus:outline-none focus:ring-2 focus:ring-offset-2
-  `;
+  const baseStyles = 'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2';
 
   const variants = {
-    primary: `
-      bg-gradient-to-r from-navy-600 to-navy-700
-      text-white shadow-lg shadow-navy-700/30
-      hover:from-navy-500 hover:to-navy-600 hover:-translate-y-0.5
-      focus:ring-navy-500
-    `,
-    secondary: `
-      bg-gradient-to-r from-gold-400 to-gold-500
-      text-navy-900 shadow-lg shadow-gold-500/30
-      hover:from-gold-300 hover:to-gold-400 hover:-translate-y-0.5
-      focus:ring-gold-400
-    `,
-    outline: `
-      bg-transparent border-2 border-navy-700
-      text-navy-700
-      hover:bg-navy-700 hover:text-white
-      focus:ring-navy-500
-    `,
-    ghost: `
-      bg-transparent text-navy-700
-      hover:bg-navy-100
-      focus:ring-navy-300
-    `,
+    primary: 'bg-gradient-to-r from-navy-600 to-navy-700 text-white shadow-lg shadow-navy-700/30 hover:from-navy-500 hover:to-navy-600 hover:-translate-y-0.5 focus:ring-navy-500',
+    secondary: 'bg-gradient-to-r from-gold-400 to-gold-500 text-navy-900 shadow-lg shadow-gold-500/30 hover:from-gold-300 hover:to-gold-400 hover:-translate-y-0.5 focus:ring-gold-400',
+    outline: 'bg-transparent border-2 border-navy-700 text-navy-700 hover:bg-navy-700 hover:text-white focus:ring-navy-500',
+    ghost: 'bg-transparent text-navy-700 hover:bg-navy-100 focus:ring-navy-300',
   };
 
   const sizes = {

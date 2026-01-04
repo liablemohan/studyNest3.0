@@ -1,12 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 export default function Footer() {
-    const currentYear = new Date().getFullYear();
+    const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/set-state-in-effect
+    useEffect(() => {
+        setCurrentYear(new Date().getFullYear());
+    }, []);
 
     const quickLinks = [
         { href: '/services#housing', label: 'Housing' },
@@ -27,8 +32,8 @@ export default function Footer() {
     return (
         <footer className="bg-navy-700 text-white">
             {/* Main Footer - Optimized for mobile */}
-            <div className="container mx-auto px-4 pt-16 sm:pt-24 md:pt-32 pb-10 sm:pb-16">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 text-center sm:text-left">
+            <div className="container mx-auto px-4 pt-18 sm:pt-28 md:pt-36 pb-10 sm:pb-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 pt-18 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 text-center sm:text-left">
                     {/* Brand Column */}
                     <div className="space-y-5 sm:space-y-6">
                         <Link href="/" className="flex items-center gap-3 justify-center sm:justify-start">
@@ -60,8 +65,7 @@ export default function Footer() {
                                 <a
                                     key={index}
                                     href={href}
-                                    className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center
-                                        hover:bg-gold-500 active:bg-gold-600 transition-colors duration-200"
+                                    className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-gold-500 active:bg-gold-600 transition-colors duration-200"
                                 >
                                     <Icon size={18} />
                                 </a>
@@ -74,7 +78,7 @@ export default function Footer() {
                         <h4 className="text-base sm:text-lg font-bold mb-4 sm:mb-6 text-gold-400">Our Services</h4>
                         <ul className="space-y-2 sm:space-y-3">
                             {quickLinks.map((link) => (
-                                <li key={link.href}>
+                                <li key={link.label}>
                                     <Link
                                         href={link.href}
                                         className="text-beige-300 hover:text-gold-400 transition-colors text-sm sm:text-base py-1 inline-block"
@@ -91,7 +95,7 @@ export default function Footer() {
                         <h4 className="text-base sm:text-lg font-bold mb-4 sm:mb-6 text-gold-400">Company</h4>
                         <ul className="space-y-2 sm:space-y-3">
                             {companyLinks.map((link) => (
-                                <li key={link.href}>
+                                <li key={link.label}>
                                     <Link
                                         href={link.href}
                                         className="text-beige-300 hover:text-gold-400 transition-colors text-sm sm:text-base py-1 inline-block"
@@ -136,7 +140,7 @@ export default function Footer() {
                 <div className="container mx-auto px-4 py-4 sm:py-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
                         <p className="text-beige-400 text-xs sm:text-sm text-center md:text-left">
-                            © {currentYear} StudyNest. All rights reserved.
+                            © {currentYear ?? '2026'} StudyNest. All rights reserved.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-beige-400">
                             <a href="#" className="hover:text-gold-400 py-1">Privacy Policy</a>
@@ -146,6 +150,6 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-        </footer>
+        </footer >
     );
 }

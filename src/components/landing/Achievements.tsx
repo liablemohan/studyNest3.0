@@ -49,7 +49,7 @@ const achievements = [
     },
 ];
 
-// Animated counter component using anime.js v4
+// Animated counter component using simple JavaScript
 function AnimatedCounter({
     target,
     suffix = '',
@@ -66,19 +66,22 @@ function AnimatedCounter({
         if (shouldAnimate && !hasAnimatedRef.current) {
             hasAnimatedRef.current = true;
 
-            // Use anime.js v4 API
-            import('animejs').then((anime) => {
-                const obj = { value: 0 };
+            // Simple JavaScript counter animation
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let currentValue = 0;
 
-                anime.animate(obj, {
-                    value: target,
-                    duration: 2000,
-                    easing: 'outExpo',
-                    onUpdate: () => {
-                        setDisplayValue(Math.round(obj.value).toLocaleString() + suffix);
-                    },
-                });
-            });
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= target) {
+                    currentValue = target;
+                    clearInterval(timer);
+                }
+                setDisplayValue(Math.round(currentValue).toLocaleString() + suffix);
+            }, duration / steps);
+
+            return () => clearInterval(timer);
         }
     }, [shouldAnimate, target, suffix]);
 
@@ -92,26 +95,11 @@ export default function Achievements() {
     const [shouldAnimate, setShouldAnimate] = useState(false);
     const hasSetupRef = useRef(false);
 
-    // Setup: Hide elements after mount (to avoid hydration mismatch)
+    // Setup: prepare elements for simple CSS transitions
     useEffect(() => {
         if (!hasSetupRef.current) {
             hasSetupRef.current = true;
-
-            // Hide stat cards
-            if (statsGridRef.current) {
-                statsGridRef.current.querySelectorAll('.stat-card').forEach((el) => {
-                    (el as HTMLElement).style.opacity = '0';
-                    (el as HTMLElement).style.transform = 'translateY(40px) scale(0.9)';
-                });
-            }
-
-            // Hide achievement cards
-            if (achievementsRef.current) {
-                achievementsRef.current.querySelectorAll('.achievement-card').forEach((el, i) => {
-                    (el as HTMLElement).style.opacity = '0';
-                    (el as HTMLElement).style.transform = `translateX(${i === 0 ? -50 : 50}px)`;
-                });
-            }
+            // Elements will use Framer Motion's whileInView for animations
         }
     }, []);
 
@@ -135,45 +123,7 @@ export default function Achievements() {
         return () => observer.disconnect();
     }, []);
 
-    // Run animations when shouldAnimate becomes true
-    const runAnimations = useCallback(async () => {
-        const anime = await import('animejs');
 
-        // Animate stat cards with stagger
-        if (statsGridRef.current) {
-            const cards = statsGridRef.current.querySelectorAll('.stat-card');
-            cards.forEach((el, i) => {
-                anime.animate(el, {
-                    translateY: [40, 0],
-                    opacity: [0, 1],
-                    scale: [0.9, 1],
-                    duration: 800,
-                    delay: 200 + (i * 100),
-                    easing: 'outElastic(1, 0.8)',
-                });
-            });
-        }
-
-        // Animate achievement cards
-        if (achievementsRef.current) {
-            const cards = achievementsRef.current.querySelectorAll('.achievement-card');
-            cards.forEach((el, i) => {
-                anime.animate(el, {
-                    translateX: [i === 0 ? -50 : 50, 0],
-                    opacity: [0, 1],
-                    duration: 1000,
-                    delay: 600 + (i * 200),
-                    easing: 'outCubic',
-                });
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        if (shouldAnimate) {
-            runAnimations();
-        }
-    }, [shouldAnimate, runAnimations]);
 
     return (
         <section ref={sectionRef} className="section bg-white relative overflow-hidden">
@@ -190,8 +140,7 @@ export default function Achievements() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <span className="inline-block px-4 py-1.5 bg-gold-100 text-gold-700 
-                         rounded-full text-sm font-semibold mb-4">
+                    <span className="inline-block px-4 py-1.5 bg-gold-100 text-gold-700 rounded-full text-sm font-semibold mb-4">
                         Our Impact
                     </span>
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-700 mb-4">
@@ -212,13 +161,9 @@ export default function Achievements() {
                     {stats.map((stat) => (
                         <div
                             key={stat.label}
-                            className="stat-card bg-gradient-to-br from-beige-50 to-white p-4 sm:p-6 rounded-2xl
-                                border border-beige-200 text-center
-                                hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                            className="stat-card bg-gradient-to-br from-beige-50 to-white p-4 sm:p-6 rounded-2xl border border-beige-200 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                         >
-                            <div className="w-11 h-11 sm:w-14 sm:h-14 mx-auto mb-3 sm:mb-4 rounded-xl 
-                                bg-gradient-to-br from-navy-600 to-navy-700
-                                flex items-center justify-center">
+                            <div className="w-11 h-11 sm:w-14 sm:h-14 mx-auto mb-3 sm:mb-4 rounded-xl bg-gradient-to-br from-navy-600 to-navy-700 flex items-center justify-center">
                                 <stat.icon className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
                             </div>
                             <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy-700 mb-1">
@@ -242,12 +187,9 @@ export default function Achievements() {
                     {achievements.map((achievement) => (
                         <div
                             key={achievement.title}
-                            className="achievement-card flex flex-col sm:flex-row gap-4 sm:gap-5 p-5 sm:p-6 bg-gradient-to-r from-navy-700 to-navy-800
-                                rounded-2xl text-white group hover:shadow-2xl transition-shadow"
+                            className="achievement-card flex flex-col sm:flex-row gap-4 sm:gap-5 p-5 sm:p-6 bg-gradient-to-r from-navy-700 to-navy-800 rounded-2xl text-white group hover:shadow-2xl transition-shadow"
                         >
-                            <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gold-500/20
-                                flex items-center justify-center
-                                group-hover:bg-gold-500/30 transition-colors mx-auto sm:mx-0">
+                            <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gold-500/20 flex items-center justify-center group-hover:bg-gold-500/30 transition-colors mx-auto sm:mx-0">
                                 <achievement.icon className="w-6 h-6 sm:w-7 sm:h-7 text-gold-400" />
                             </div>
                             <div className="text-center sm:text-left">
@@ -271,8 +213,7 @@ export default function Achievements() {
                             {['🇮🇳', '🇧🇷', '🇯🇵', '🇩🇪', '🇳🇬'].map((flag, i) => (
                                 <div
                                     key={i}
-                                    className="w-8 h-8 rounded-full bg-white border-2 border-white
-                                        flex items-center justify-center text-sm"
+                                    className="w-8 h-8 rounded-full bg-white border-2 border-white flex items-center justify-center text-sm"
                                 >
                                     {flag}
                                 </div>

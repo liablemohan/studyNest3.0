@@ -1,12 +1,54 @@
 'use client';
 
-import React, { useState, useRef, useEffect, Suspense } from 'react';
+import React, { useState, useRef, useEffect, Suspense, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
+
+// Mobile detection hook
+function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    return isMobile;
+}
+
+// Throttle utility
+function throttle<T extends (...args: any[]) => any>(func: T, wait: number): T {
+    let timeout: NodeJS.Timeout | null = null;
+    let previous = 0;
+
+    return function (this: any, ...args: Parameters<T>) {
+        const now = Date.now();
+        const remaining = wait - (now - previous);
+
+        if (remaining <= 0 || remaining > wait) {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            previous = now;
+            func.apply(this, args);
+        } else if (!timeout) {
+            timeout = setTimeout(() => {
+                previous = Date.now();
+                timeout = null;
+                func.apply(this, args);
+            }, remaining);
+        }
+    } as T;
+}
 
 // Service spots on the Paris "treasure map" - positioned to match the vintage map layout
 const serviceSpots = [
@@ -112,43 +154,60 @@ export default function TreasureHuntMap() {
     const [clickedSpot, setClickedSpot] = useState<string | null>(null);
     const [pierrePosition, setPierrePosition] = useState({ x: 50, y: 50 });
     const [has3DModel, setHas3DModel] = useState(false);
+    const isMobile = useIsMobile();
+    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     useEffect(() => {
-        fetch('/models/pierre-mascot.glb', { method: 'HEAD' })
-            .then((res) => setHas3DModel(res.ok))
-            .catch(() => setHas3DModel(false));
-    }, []);
+        // Only check for 3D model on desktop
+        if (!isMobile) {
+            fetch('/models/pierre-mascot.glb', { method: 'HEAD' })
+                .then((res) => setHas3DModel(res.ok))
+                .catch(() => setHas3DModel(false));
+        }
+    }, [isMobile]);
 
-    useEffect(() => {
-        const handleMouseMove = (e: MouseEvent) => {
+    // Throttled mouse move handler (only on desktop)
+    const handleMouseMove = useCallback(
+        throttle((e: MouseEvent) => {
             if (containerRef.current) {
                 const rect = containerRef.current.getBoundingClientRect();
                 const x = ((e.clientX - rect.left) / rect.width) * 100;
                 const y = ((e.clientY - rect.top) / rect.height) * 100;
                 setMousePosition({ x: Math.max(5, Math.min(95, x)), y: Math.max(5, Math.min(95, y)) });
             }
-        };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
+        }, 33), // Throttle to ~30fps instead of 60fps
+        []
+    );
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            setPierrePosition(prev => ({
-                x: prev.x + (mousePosition.x - prev.x) * 0.08,
-                y: prev.y + (mousePosition.y - prev.y) * 0.08,
-            }));
-        }, 16);
-        return () => clearInterval(interval);
-    }, [mousePosition]);
+        // Only track mouse on desktop (not needed on mobile/tablet)
+        if (!isMobile) {
+            window.addEventListener('mousemove', handleMouseMove);
+            return () => window.removeEventListener('mousemove', handleMouseMove);
+        }
+    }, [isMobile, handleMouseMove]);
 
+    useEffect(() => {
+        // Reduced frequency animation loop (30fps instead of 60fps) and only on desktop
+        if (!isMobile && !prefersReducedMotion) {
+            const interval = setInterval(() => {
+                setPierrePosition(prev => ({
+                    x: prev.x + (mousePosition.x - prev.x) * 0.08,
+                    y: prev.y + (mousePosition.y - prev.y) * 0.08,
+                }));
+            }, 33); // 30fps instead of 16ms (60fps)
+            return () => clearInterval(interval);
+        }
+    }, [mousePosition, isMobile, prefersReducedMotion]);
+
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/set-state-in-effect
     useEffect(() => {
         const nearSpot = serviceSpots.find(spot => {
             const distance = Math.sqrt(
-                Math.pow(pierrePosition.x - spot.position.x, 2) +
-                Math.pow(pierrePosition.y - spot.position.y, 2)
+                Math.pow(spot.position.x - pierrePosition.x, 2) +
+                Math.pow(spot.position.y - pierrePosition.y, 2)
             );
-            return distance < 12;
+            return distance < 8;
         });
         setHoveredSpot(nearSpot?.id || null);
     }, [pierrePosition]);
@@ -177,7 +236,7 @@ export default function TreasureHuntMap() {
                     transition={{ delay: 0.1 }}
                     className="text-4xl md:text-5xl font-bold text-navy-700 mb-4"
                 >
-                    Aventure Académique <span className="text-gold-500">Parisienne</span>
+                    Adventure Académique <span className="text-gold-500">Parisienne</span>
                 </motion.h2>
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
@@ -286,87 +345,104 @@ export default function TreasureHuntMap() {
                             {/* Popup Card - vintage styled, positioned smartly */}
                             <AnimatePresence>
                                 {isClicked && (
-                                    <Link href={spot.link}>
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                                            className="absolute left-1/2 -translate-x-1/2
-                                                rounded-xl p-4 shadow-2xl w-56 md:w-64 text-center
-                                                cursor-pointer transition-shadow z-40"
-                                            style={{
-                                                // Position above if spot is in lower half, below otherwise
-                                                ...(spot.position.y > 50
-                                                    ? { bottom: '100%', marginBottom: '60px' }
-                                                    : { top: '100%', marginTop: '60px' }
-                                                ),
-                                                background: 'linear-gradient(145deg, #faf6f0 0%, #f0e6d8 100%)',
-                                                border: '3px solid #8B4513',
-                                                boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                                        className="absolute left-1/2 -translate-x-1/2
+                                            rounded-xl p-4 shadow-2xl w-56 md:w-64 text-center
+                                            transition-shadow z-40"
+                                        style={{
+                                            // Position above if spot is in lower half, below otherwise
+                                            ...(spot.position.y > 50
+                                                ? { bottom: '100%', marginBottom: '60px' }
+                                                : { top: '100%', marginTop: '60px' }
+                                            ),
+                                            background: 'linear-gradient(145deg, #faf6f0 0%, #f0e6d8 100%)',
+                                            border: '3px solid #8B4513',
+                                            boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
+                                        }}
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {/* Close button */}
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                setClickedSpot(null);
                                             }}
-                                            onClick={(e) => e.stopPropagation()}
+                                            className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center
+                                                text-white font-bold text-sm hover:opacity-80 transition-opacity"
+                                            style={{
+                                                background: 'linear-gradient(145deg, #8B4513 0%, #5c3d2e 100%)',
+                                            }}
+                                            aria-label="Close"
                                         >
-                                            {/* Arrow pointing to spot */}
-                                            <div
-                                                className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
-                                                style={{
-                                                    ...(spot.position.y > 50
-                                                        ? {
-                                                            top: '100%',
-                                                            borderLeft: '10px solid transparent',
-                                                            borderRight: '10px solid transparent',
-                                                            borderTop: '10px solid #8B4513',
-                                                        }
-                                                        : {
-                                                            bottom: '100%',
-                                                            borderLeft: '10px solid transparent',
-                                                            borderRight: '10px solid transparent',
-                                                            borderBottom: '10px solid #8B4513',
-                                                        }
-                                                    ),
-                                                }}
-                                            />
+                                            ✕
+                                        </button>
 
-                                            <div
-                                                className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-xl"
-                                                style={{
-                                                    background: 'linear-gradient(145deg, #e8d4b8 0%, #d4bc9a 100%)',
-                                                    border: '2px solid #8B4513',
-                                                }}
-                                            >
-                                                {spot.icon}
-                                            </div>
-                                            <h3
-                                                className="font-bold text-lg mb-1.5"
-                                                style={{ color: '#5c3d2e', fontFamily: 'serif' }}
-                                            >
-                                                {spot.name}
-                                            </h3>
-                                            <p
-                                                className="text-sm mb-3 leading-relaxed"
-                                                style={{ color: '#6b5344' }}
-                                            >
-                                                {spot.description}
-                                            </p>
+                                        {/* Arrow pointing to spot */}
+                                        <div
+                                            className="absolute left-1/2 -translate-x-1/2 w-0 h-0"
+                                            style={{
+                                                ...(spot.position.y > 50
+                                                    ? {
+                                                        top: '100%',
+                                                        borderLeft: '10px solid transparent',
+                                                        borderRight: '10px solid transparent',
+                                                        borderTop: '10px solid #8B4513',
+                                                    }
+                                                    : {
+                                                        bottom: '100%',
+                                                        borderLeft: '10px solid transparent',
+                                                        borderRight: '10px solid transparent',
+                                                        borderBottom: '10px solid #8B4513',
+                                                    }
+                                                ),
+                                            }}
+                                        />
+
+                                        <div
+                                            className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center text-xl"
+                                            style={{
+                                                background: 'linear-gradient(145deg, #e8d4b8 0%, #d4bc9a 100%)',
+                                                border: '2px solid #8B4513',
+                                            }}
+                                        >
+                                            {spot.icon}
+                                        </div>
+                                        <h3
+                                            className="font-bold text-lg mb-1.5"
+                                            style={{ color: '#5c3d2e', fontFamily: 'serif' }}
+                                        >
+                                            {spot.name}
+                                        </h3>
+                                        <p
+                                            className="text-sm mb-3 leading-relaxed"
+                                            style={{ color: '#6b5344' }}
+                                        >
+                                            {spot.description}
+                                        </p>
+                                        <Link href={spot.link}>
                                             <span
                                                 className="inline-block px-4 py-2 text-sm font-semibold rounded-full text-white
-                                                    hover:opacity-90 transition-opacity"
+                                                    hover:opacity-90 transition-opacity cursor-pointer"
                                                 style={{
                                                     background: 'linear-gradient(145deg, #8B4513 0%, #5c3d2e 100%)',
                                                 }}
                                             >
                                                 Learn More →
                                             </span>
-                                        </motion.div>
-                                    </Link>
+                                        </Link>
+                                    </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
                     );
                 })}
 
-                {/* Pierre the Pilot - with enhanced lighting */}
-                {has3DModel ? (
+                {/* Pierre the Pilot - 3D only on desktop for performance */}
+                {!isMobile && !prefersReducedMotion && has3DModel ? (
                     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 30 }}>
                         <Pierre3DCanvas mousePosition={mousePosition} />
                     </div>
@@ -378,7 +454,7 @@ export default function TreasureHuntMap() {
                             top: `${pierrePosition.y}%`,
                             zIndex: 30,
                         }}
-                        animate={{ rotate: (mousePosition.x - pierrePosition.x) * 2 }}
+                        animate={!prefersReducedMotion ? { rotate: (mousePosition.x - pierrePosition.x) * 2 } : {}}
                     >
                         <div className="relative -translate-x-1/2 -translate-y-1/2">
                             <div
@@ -395,19 +471,18 @@ export default function TreasureHuntMap() {
                             <AnimatePresence>
                                 {!hoveredSpot && !clickedSpot && (
                                     <motion.div
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.8 }}
-                                        className="absolute -top-8 left-1/2 -translate-x-1/2 
-                                            px-2 py-1 rounded text-xs font-medium whitespace-nowrap"
+                                        initial={{ opacity: 0, y: -5 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -5 }}
+                                        className="absolute top-full left-1/2 -translate-x-1/2 mt-2 
+                                            px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shadow-lg"
                                         style={{
                                             background: 'linear-gradient(145deg, #f5e6d3 0%, #e8d4b8 100%)',
                                             color: '#5c3d2e',
                                             border: '2px solid #8B4513',
-                                            fontFamily: 'serif',
                                         }}
                                     >
-                                        Click a spot! ✨
+                                        💬 Chat with Pierre
                                     </motion.div>
                                 )}
                             </AnimatePresence>

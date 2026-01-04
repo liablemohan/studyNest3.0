@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, MapPin, Phone, Mail, Globe, ChevronRight, Star } from 'lucide-react';
+import { ExternalLink, MapPin, Phone, Mail, ChevronRight, Star } from 'lucide-react';
 
 interface Partner {
     id: string;

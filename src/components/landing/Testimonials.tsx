@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, Quote } from 'lucide-react';
-import Image from 'next/image';
+import { Star, Quote, Copy } from 'lucide-react';
 
 const testimonials = [
     {
@@ -54,8 +53,7 @@ export default function Testimonials() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-10 sm:mb-16"
                 >
-                    <span className="inline-block px-4 py-1.5 bg-gold-500/20 text-gold-400 
-                         rounded-full text-sm font-semibold mb-4">
+                    <span className="inline-block px-4 py-1.5 bg-gold-500/20 text-gold-400 rounded-full text-sm font-semibold mb-4">
                         Student Stories
                     </span>
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
@@ -75,8 +73,7 @@ export default function Testimonials() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10
-                                hover:bg-white/10 transition-colors duration-300"
+                            className="bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10 hover:bg-white/10 transition-colors duration-300"
                         >
                             {/* Stars */}
                             <div className="flex gap-1 mb-4">
@@ -92,8 +89,7 @@ export default function Testimonials() {
 
                             {/* Author */}
                             <div className="flex items-center gap-3 sm:gap-4">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600
-                                    flex items-center justify-center text-navy-900 font-bold text-base sm:text-lg">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-navy-900 font-bold text-base sm:text-lg">
                                     {testimonial.name.charAt(0)}
                                 </div>
                                 <div>
@@ -120,8 +116,7 @@ export default function Testimonials() {
                         {['Sorbonne', 'Sciences Po', 'ESSEC', 'HEC Paris', 'INSEAD'].map((uni) => (
                             <div
                                 key={uni}
-                                className="text-sm sm:text-lg font-semibold text-white/80 px-3 sm:px-4 py-1.5 sm:py-2
-                                    border border-white/10 rounded-lg"
+                                className="text-sm sm:text-lg font-semibold text-white/80 px-3 sm:px-4 py-1.5 sm:py-2 border border-white/10 rounded-lg"
                             >
                                 {uni}
                             </div>

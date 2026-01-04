@@ -42,36 +42,11 @@ export default function HowItWorks() {
     const [shouldAnimate, setShouldAnimate] = useState(false);
     const hasSetupRef = useRef(false);
 
-    // Setup: Hide elements after mount (to avoid hydration mismatch)
+    // Setup: prepare elements for CSS transition-based animations
     useEffect(() => {
         if (!hasSetupRef.current) {
             hasSetupRef.current = true;
-
-            // Hide connection line
-            if (lineRef.current) {
-                lineRef.current.style.transform = 'scaleX(0)';
-            }
-
-            // Hide step cards
-            if (stepsRef.current) {
-                stepsRef.current.querySelectorAll('.step-card').forEach((el) => {
-                    (el as HTMLElement).style.opacity = '0';
-                    (el as HTMLElement).style.transform = 'translateY(60px)';
-                });
-
-                stepsRef.current.querySelectorAll('.step-number').forEach((el) => {
-                    (el as HTMLElement).style.transform = 'scale(0)';
-                });
-
-                stepsRef.current.querySelectorAll('.step-icon').forEach((el) => {
-                    (el as HTMLElement).style.transform = 'scale(0.5)';
-                });
-
-                stepsRef.current.querySelectorAll('.step-arrow').forEach((el) => {
-                    (el as HTMLElement).style.opacity = '0';
-                    (el as HTMLElement).style.transform = 'scale(0)';
-                });
-            }
+            // Elements will animate via CSS transitions when class is toggled
         }
     }, []);
 
@@ -95,73 +70,7 @@ export default function HowItWorks() {
         return () => observer.disconnect();
     }, []);
 
-    // Run animations when shouldAnimate becomes true
-    const runAnimations = useCallback(async () => {
-        const anime = await import('animejs');
 
-        // Animate the connection line growing
-        if (lineRef.current) {
-            anime.animate(lineRef.current, {
-                scaleX: [0, 1],
-                duration: 800,
-                easing: 'outExpo',
-            });
-        }
-
-        // Animate step cards appearing one by one
-        if (stepsRef.current) {
-            const cards = stepsRef.current.querySelectorAll('.step-card');
-            cards.forEach((card, i) => {
-                anime.animate(card, {
-                    translateY: [60, 0],
-                    opacity: [0, 1],
-                    duration: 600,
-                    delay: 200 + i * 150,
-                    easing: 'outExpo',
-                });
-            });
-
-            // Animate step numbers popping in
-            const numbers = stepsRef.current.querySelectorAll('.step-number');
-            numbers.forEach((num, i) => {
-                anime.animate(num, {
-                    scale: [0, 1],
-                    duration: 400,
-                    delay: 400 + i * 150,
-                    easing: 'outBack',
-                });
-            });
-
-            // Animate arrow connectors
-            const arrows = stepsRef.current.querySelectorAll('.step-arrow');
-            arrows.forEach((arrow, i) => {
-                anime.animate(arrow, {
-                    scale: [0, 1],
-                    opacity: [0, 1],
-                    duration: 300,
-                    delay: 600 + i * 150,
-                    easing: 'outExpo',
-                });
-            });
-
-            // Animate icons with elastic easing
-            const icons = stepsRef.current.querySelectorAll('.step-icon');
-            icons.forEach((icon, i) => {
-                anime.animate(icon, {
-                    scale: [0.5, 1],
-                    duration: 800,
-                    delay: 300 + i * 100,
-                    easing: 'outElastic(1, 0.5)',
-                });
-            });
-        }
-    }, []);
-
-    useEffect(() => {
-        if (shouldAnimate) {
-            runAnimations();
-        }
-    }, [shouldAnimate, runAnimations]);
 
     return (
         <section ref={sectionRef} className="section bg-beige-100">
@@ -174,8 +83,7 @@ export default function HowItWorks() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <span className="inline-block px-4 py-1.5 bg-navy-100 text-navy-700 
-                         rounded-full text-sm font-semibold mb-4">
+                    <span className="inline-block px-4 py-1.5 bg-navy-100 text-navy-700 rounded-full text-sm font-semibold mb-4">
                         Simple Process
                     </span>
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-700 mb-4">
@@ -200,23 +108,17 @@ export default function HowItWorks() {
                                 key={step.step}
                                 className="step-card relative"
                             >
-                                <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-lg border border-beige-200
-                                    hover:shadow-2xl hover:-translate-y-2 transition-all duration-300
-                                    relative z-10">
+                                <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-lg border border-beige-200 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative z-10">
                                     {/* Step number */}
                                     <div
-                                        className={`step-number absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-xl
-                                            bg-gradient-to-br ${step.color} text-white
-                                            flex items-center justify-center font-bold text-base sm:text-lg
-                                            shadow-lg`}
+                                        className={`step-number absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${step.color} text-white flex items-center justify-center font-bold text-base sm:text-lg shadow-lg`}
                                     >
                                         {step.step}
                                     </div>
 
                                     {/* Icon */}
                                     <div
-                                        className={`step-icon w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${step.color}
-                                            flex items-center justify-center mb-4 sm:mb-5`}
+                                        className={`step-icon w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center mb-4 sm:mb-5`}
                                     >
                                         <step.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
                                     </div>

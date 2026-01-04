@@ -1,11 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
+const STARS = [
+    { top: '25%', left: '15%', delay: 0.2, duration: 2.5 },
+    { top: '70%', left: '85%', delay: 0.8, duration: 3.2 },
+    { top: '40%', left: '75%', delay: 1.2, duration: 2.8 },
+    { top: '80%', left: '20%', delay: 0.5, duration: 3.5 },
+];
+
 export default function CTASection() {
+    const [isMounted, setIsMounted] = useState(false);
+
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/set-state-in-effect
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     return (
         <section className="section bg-beige-100 relative overflow-hidden">
             {/* Background gradient */}
@@ -17,37 +31,38 @@ export default function CTASection() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="relative bg-gradient-to-br from-navy-700 via-navy-800 to-navy-900
-                        rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-16 text-center overflow-hidden"
+                    className="relative bg-gradient-to-br from-navy-700 via-navy-800 to-navy-900 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-16 text-center overflow-hidden"
                 >
                     {/* Decorative elements - smaller on mobile */}
                     <div className="absolute top-0 left-0 w-32 sm:w-64 h-32 sm:h-64 bg-gold-500/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
                     <div className="absolute bottom-0 right-0 w-32 sm:w-64 h-32 sm:h-64 bg-blue-500/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
 
                     {/* Floating stars - reduced on mobile for performance */}
-                    <div className="hidden sm:block">
-                        {[...Array(4)].map((_, i) => (
-                            <motion.div
-                                key={i}
-                                className="absolute text-gold-400"
-                                style={{
-                                    top: `${20 + Math.random() * 60}%`,
-                                    left: `${10 + Math.random() * 80}%`,
-                                }}
-                                animate={{
-                                    y: [0, -10, 0],
-                                    opacity: [0.3, 1, 0.3],
-                                }}
-                                transition={{
-                                    duration: 2 + Math.random() * 2,
-                                    repeat: Infinity,
-                                    delay: Math.random() * 2,
-                                }}
-                            >
-                                <Sparkles className="w-4 h-4" />
-                            </motion.div>
-                        ))}
-                    </div>
+                    {isMounted && (
+                        <div className="hidden sm:block">
+                            {STARS.map((star, i) => (
+                                <motion.div
+                                    key={i}
+                                    className="absolute text-gold-400"
+                                    style={{
+                                        top: star.top,
+                                        left: star.left,
+                                    }}
+                                    animate={{
+                                        y: [0, -10, 0],
+                                        opacity: [0.3, 1, 0.3],
+                                    }}
+                                    transition={{
+                                        duration: star.duration,
+                                        repeat: Infinity,
+                                        delay: star.delay,
+                                    }}
+                                >
+                                    <Sparkles className="w-4 h-4" />
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
 
                     <div className="relative z-10">
                         <motion.span
@@ -55,8 +70,7 @@ export default function CTASection() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.1 }}
-                            className="inline-block px-3 sm:px-4 py-1.5 bg-gold-500/20 text-gold-400 
-                                rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6"
+                            className="inline-block px-3 sm:px-4 py-1.5 bg-gold-500/20 text-gold-400 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6"
                         >
                             Start Your Journey
                         </motion.span>
@@ -92,17 +106,14 @@ export default function CTASection() {
                         >
                             <Link
                                 href="/services"
-                                className="btn bg-gradient-to-r from-gold-400 to-gold-500 text-navy-900
-                                    text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] hover:from-gold-300 hover:to-gold-400
-                                    shadow-lg shadow-gold-500/30"
+                                className="btn bg-gradient-to-r from-gold-400 to-gold-500 text-navy-900 text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] hover:from-gold-300 hover:to-gold-400 shadow-lg shadow-gold-500/30"
                             >
                                 View Packages
                                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                             </Link>
                             <Link
                                 href="/about"
-                                className="btn bg-white/10 text-white border border-white/20
-                                    text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] hover:bg-white/20"
+                                className="btn bg-white/10 text-white border border-white/20 text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] hover:bg-white/20"
                             >
                                 Learn More
                             </Link>

@@ -102,8 +102,6 @@ const packages = [
 ];
 
 export default function PackageCards() {
-    const [billingCycle, setBillingCycle] = useState<'one-time' | 'monthly'>('one-time');
-
     return (
         <section className="section bg-white" id="packages">
             <div className="container mx-auto">

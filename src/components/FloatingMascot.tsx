@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Sparkles } from 'lucide-react';
@@ -13,6 +13,7 @@ interface Message {
 
 export default function FloatingMascot() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isVisible, setIsVisible] = useState(false); // Defer initial render
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
@@ -21,6 +22,14 @@ export default function FloatingMascot() {
         },
     ]);
     const [inputValue, setInputValue] = useState('');
+
+    // Defer FloatingMascot rendering to improve initial page load
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsVisible(true);
+        }, 2000); // Load after 2 seconds when page is already interactive
+        return () => clearTimeout(timer);
+    }, []);
 
     const quickResponses = [
         "Help me find housing",
@@ -32,8 +41,9 @@ export default function FloatingMascot() {
     const handleSend = (text: string) => {
         if (!text.trim()) return;
 
+        const now = Date.now();
         const userMessage: Message = {
-            id: Date.now().toString(),
+            id: now.toString(),
             text,
             isBot: false,
         };
@@ -51,7 +61,7 @@ export default function FloatingMascot() {
             };
 
             const botMessage: Message = {
-                id: (Date.now() + 1).toString(),
+                id: (now + 1).toString(),
                 text: botResponses[text] || "I'd be happy to help! For detailed assistance, please check out our Services page or book a consultation with our team.",
                 isBot: true,
             };
@@ -59,6 +69,9 @@ export default function FloatingMascot() {
             setMessages((prev) => [...prev, botMessage]);
         }, 1000);
     };
+
+    // Don't render until visible
+    if (!isVisible) return null;
 
     return (
         <>
@@ -82,6 +95,7 @@ export default function FloatingMascot() {
                     alt="Chat with Pierre"
                     fill
                     className="object-cover"
+                    loading="lazy"
                 />
                 {/* Pulse animation */}
                 <motion.div
@@ -117,6 +131,7 @@ export default function FloatingMascot() {
                                     alt="Pierre"
                                     fill
                                     className="object-cover"
+                                    loading="lazy"
                                 />
                             </div>
                             <div className="flex-1">
@@ -145,8 +160,8 @@ export default function FloatingMascot() {
                                 >
                                     <div
                                         className={`max-w-[80%] p-3 rounded-2xl ${message.isBot
-                                                ? 'bg-white shadow-sm border border-beige-200 rounded-tl-sm'
-                                                : 'bg-gradient-to-r from-navy-600 to-navy-700 text-white rounded-tr-sm'
+                                            ? 'bg-white shadow-sm border border-beige-200 rounded-tl-sm'
+                                            : 'bg-gradient-to-r from-navy-600 to-navy-700 text-white rounded-tr-sm'
                                             }`}
                                     >
                                         <p className="text-sm">{message.text}</p>

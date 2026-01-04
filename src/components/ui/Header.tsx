@@ -19,7 +19,6 @@ export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
-    const isLandingPage = pathname === '/';
 
     useEffect(() => {
         const handleScroll = () => {
@@ -31,10 +30,7 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                ? 'bg-white/90 backdrop-blur-lg shadow-md py-3'
-                : 'bg-beige-100 py-5'
-                }`}
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-lg shadow-md py-3' : 'bg-beige-100 py-5'}`}
         >
             <div className="container mx-auto px-4">
                 <nav className="flex items-center justify-between">
@@ -60,10 +56,7 @@ export default function Header() {
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`relative font-medium transition-colors hover:text-gold-500 ${pathname === link.href
-                                    ? 'text-gold-500'
-                                    : 'text-navy-700'
-                                    }`}
+                                className={`relative font-medium transition-colors hover:text-gold-500 ${pathname === link.href ? 'text-gold-500' : 'text-navy-700'}`}
                             >
                                 {link.label}
                                 {pathname === link.href && (
@@ -109,10 +102,7 @@ export default function Header() {
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className={`block py-4 px-4 rounded-xl font-medium transition-colors min-h-[48px] flex items-center ${pathname === link.href
-                                        ? 'bg-gold-100 text-gold-600'
-                                        : 'text-navy-700 hover:bg-beige-100 active:bg-beige-200'
-                                        }`}
+                                    className={`block py-4 px-4 rounded-xl font-medium transition-colors min-h-[48px] flex items-center ${pathname === link.href ? 'bg-gold-100 text-gold-600' : 'text-navy-700 hover:bg-beige-100 active:bg-beige-200'}`}
                                 >
                                     {link.label}
                                 </Link>

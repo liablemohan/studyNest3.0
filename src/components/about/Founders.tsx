@@ -6,7 +6,7 @@ import { Linkedin, Twitter, Mail } from 'lucide-react';
 
 const founders = [
     {
-        name: 'Alexandre Martin',
+        name: 'Shreyas',
         role: 'CEO & Co-Founder',
         bio: 'Former international student from Brazil, Alexandre experienced firsthand the challenges of settling in Paris. With a background in business administration, he leads StudyNest\'s strategic vision.',
         image: '/images/founders/alex.jpg',

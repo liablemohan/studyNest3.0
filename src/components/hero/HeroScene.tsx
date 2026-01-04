@@ -25,9 +25,9 @@ export default function HeroScene() {
             {/* Dark navy overlay for consistent dark look */}
             <div className="absolute inset-0 bg-gradient-to-b from-navy-900/90 via-navy-800/85 to-navy-900/95" />
 
-            {/* Animated particles overlay for visual interest */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(20)].map((_, i) => (
+            {/* Animated particles overlay - reduced for mobile performance */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none hidden sm:block">
+                {[...Array(12)].map((_, i) => (
                     <motion.div
                         key={i}
                         className="absolute w-1 h-1 bg-gold-400/40 rounded-full"
@@ -59,22 +59,22 @@ export default function HeroScene() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3 }}
-                    className="text-center px-4 max-w-5xl"
+                    className="text-center px-5 sm:px-6 max-w-5xl"
                 >
                     {/* Badge */}
                     <motion.span
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.5, delay: 0.1 }}
-                        className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 
-                            rounded-full text-white/90 text-sm font-medium mb-6"
+                        className="inline-block px-3 py-1.5 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm border border-white/20 
+                            rounded-full text-white/90 text-xs sm:text-sm font-medium mb-4 sm:mb-6"
                     >
                         ✨ Your trusted partner for student life in Paris
                     </motion.span>
 
                     {/* Main heading - First line in WHITE for legibility */}
                     <h1
-                        className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 font-display leading-tight"
+                        className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold mb-4 sm:mb-6 font-display leading-tight"
                         style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5)' }}
                     >
                         <span className="text-white">Begin Your</span>
@@ -88,24 +88,24 @@ export default function HeroScene() {
 
                     {/* Subtitle */}
                     <p
-                        className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed"
+                        className="text-base sm:text-xl md:text-2xl text-white/90 max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed px-2"
                         style={{ textShadow: '0 2px 15px rgba(0,0,0,0.5)' }}
                     >
                         From housing to banking, from SIM cards to subsidies —
                         we make settling in Paris effortless for international students.
                     </p>
 
-                    {/* CTAs */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    {/* CTAs - improved mobile touch targets */}
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
                         <Link
                             href="/services"
-                            className="btn btn-secondary text-lg px-8 py-4 shadow-2xl hover:shadow-gold-500/25 transition-shadow"
+                            className="btn btn-secondary text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] shadow-2xl hover:shadow-gold-500/25 transition-shadow"
                         >
                             Explore Services
                         </Link>
                         <Link
                             href="/about"
-                            className="btn btn-outline-light text-lg px-8 py-4 border-2 border-white/30 text-white
+                            className="btn btn-outline-light text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] border-2 border-white/30 text-white
                                 hover:bg-white/10 hover:border-white/50 transition-all backdrop-blur-sm"
                         >
                             Learn About Us
@@ -117,7 +117,7 @@ export default function HeroScene() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 1, duration: 0.8 }}
-                        className="mt-12 flex flex-wrap justify-center gap-8 text-white/70 text-sm"
+                        className="mt-8 sm:mt-12 flex flex-wrap justify-center gap-4 sm:gap-8 text-white/70 text-xs sm:text-sm"
                     >
                         <div className="flex items-center gap-2">
                             <span className="text-gold-400">✓</span>

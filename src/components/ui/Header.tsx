@@ -100,24 +100,25 @@ export default function Header() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
                         className="md:hidden bg-white border-t border-beige-200 shadow-lg"
                     >
-                        <div className="container mx-auto px-4 py-4 space-y-2">
+                        <div className="container mx-auto px-4 py-4 space-y-1 pb-safe">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className={`block py-3 px-4 rounded-xl font-medium transition-colors ${pathname === link.href
+                                    className={`block py-4 px-4 rounded-xl font-medium transition-colors min-h-[48px] flex items-center ${pathname === link.href
                                         ? 'bg-gold-100 text-gold-600'
-                                        : 'text-navy-700 hover:bg-beige-100'
+                                        : 'text-navy-700 hover:bg-beige-100 active:bg-beige-200'
                                         }`}
                                 >
                                     {link.label}
                                 </Link>
                             ))}
-                            <div className="pt-4">
-                                <Button variant="secondary" className="w-full" href="/services">
+                            <div className="pt-4 pb-2">
+                                <Button variant="secondary" className="w-full min-h-[48px]" href="/services">
                                     Get Started
                                 </Button>
                             </div>

@@ -35,8 +35,8 @@ const testimonials = [
 export default function Testimonials() {
     return (
         <section className="section bg-gradient-to-br from-navy-700 via-navy-800 to-navy-900 text-white relative overflow-hidden">
-            {/* Background decoration */}
-            <div className="absolute inset-0 opacity-10">
+            {/* Background decoration - hidden on mobile */}
+            <div className="absolute inset-0 opacity-10 hidden md:block">
                 <div className="absolute top-20 left-10 text-[200px]">
                     <Quote />
                 </div>
@@ -52,22 +52,22 @@ export default function Testimonials() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
+                    className="text-center mb-10 sm:mb-16"
                 >
                     <span className="inline-block px-4 py-1.5 bg-gold-500/20 text-gold-400 
                          rounded-full text-sm font-semibold mb-4">
                         Student Stories
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
                         What Our <span className="text-gold-400">Students</span> Say
                     </h2>
-                    <p className="text-lg text-white/80 max-w-2xl mx-auto">
+                    <p className="text-base sm:text-lg text-white/80 max-w-2xl mx-auto px-4 sm:px-0">
                         Real stories from real students who made Paris their new home with StudyNest.
                     </p>
                 </motion.div>
 
-                {/* Testimonials grid */}
-                <div className="grid md:grid-cols-3 gap-8">
+                {/* Testimonials grid - single column on mobile */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                     {testimonials.map((testimonial, index) => (
                         <motion.div
                             key={testimonial.name}
@@ -75,30 +75,30 @@ export default function Testimonials() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10
-                        hover:bg-white/10 transition-colors duration-300"
+                            className="bg-white/5 backdrop-blur-sm rounded-2xl p-5 sm:p-6 border border-white/10
+                                hover:bg-white/10 transition-colors duration-300"
                         >
                             {/* Stars */}
                             <div className="flex gap-1 mb-4">
                                 {[...Array(testimonial.rating)].map((_, i) => (
-                                    <Star key={i} className="w-5 h-5 fill-gold-400 text-gold-400" />
+                                    <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-gold-400 text-gold-400" />
                                 ))}
                             </div>
 
                             {/* Quote */}
-                            <p className="text-beige-100/90 mb-6 leading-relaxed">
+                            <p className="text-beige-100/90 mb-4 sm:mb-6 leading-relaxed text-sm sm:text-base">
                                 &ldquo;{testimonial.text}&rdquo;
                             </p>
 
                             {/* Author */}
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600
-                              flex items-center justify-center text-navy-900 font-bold text-lg">
+                            <div className="flex items-center gap-3 sm:gap-4">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600
+                                    flex items-center justify-center text-navy-900 font-bold text-base sm:text-lg">
                                     {testimonial.name.charAt(0)}
                                 </div>
                                 <div>
-                                    <div className="font-semibold text-white">{testimonial.name}</div>
-                                    <div className="text-sm text-white/70">
+                                    <div className="font-semibold text-white text-sm sm:text-base">{testimonial.name}</div>
+                                    <div className="text-xs sm:text-sm text-white/70">
                                         {testimonial.country} • {testimonial.university}
                                     </div>
                                 </div>
@@ -113,15 +113,15 @@ export default function Testimonials() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.3 }}
-                    className="mt-16 text-center"
+                    className="mt-10 sm:mt-16 text-center"
                 >
-                    <p className="text-white/70 mb-6">Trusted by students from top universities</p>
-                    <div className="flex flex-wrap justify-center gap-8 items-center opacity-60">
+                    <p className="text-white/70 mb-4 sm:mb-6 text-sm sm:text-base">Trusted by students from top universities</p>
+                    <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-8 items-center opacity-60">
                         {['Sorbonne', 'Sciences Po', 'ESSEC', 'HEC Paris', 'INSEAD'].map((uni) => (
                             <div
                                 key={uni}
-                                className="text-lg font-semibold text-white/80 px-4 py-2
-                         border border-white/10 rounded-lg"
+                                className="text-sm sm:text-lg font-semibold text-white/80 px-3 sm:px-4 py-1.5 sm:py-2
+                                    border border-white/10 rounded-lg"
                             >
                                 {uni}
                             </div>

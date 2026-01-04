@@ -26,13 +26,13 @@ export default function Footer() {
 
     return (
         <footer className="bg-navy-700 text-white">
-            {/* Main Footer - Added more top padding for breathing space */}
-            <div className="container mx-auto px-4 pt-32 pb-16">
-                <div className="grid grid-cols-1 pt-16 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            {/* Main Footer - Optimized for mobile */}
+            <div className="container mx-auto px-4 pt-16 sm:pt-24 md:pt-32 pb-10 sm:pb-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 text-center sm:text-left">
                     {/* Brand Column */}
-                    <div className="space-y-6">
-                        <Link href="/" className="flex items-center gap-3">
-                            <div className="relative w-12 h-12 overflow-hidden">
+                    <div className="space-y-5 sm:space-y-6">
+                        <Link href="/" className="flex items-center gap-3 justify-center sm:justify-start">
+                            <div className="relative w-10 h-10 sm:w-12 sm:h-12 overflow-hidden">
                                 <Image
                                     src="/images/studynest-logo.png"
                                     alt="StudyNest"
@@ -41,16 +41,16 @@ export default function Footer() {
                                     sizes="48px"
                                 />
                             </div>
-                            <span className="text-2xl font-bold font-display">
+                            <span className="text-xl sm:text-2xl font-bold font-display">
                                 Study<span className="text-gold-400">Nest</span>
                             </span>
                         </Link>
-                        <p className="text-beige-300 leading-relaxed">
+                        <p className="text-beige-300 leading-relaxed text-sm sm:text-base max-w-xs mx-auto sm:mx-0">
                             Your trusted companion for a seamless transition to Parisian student life.
                             We handle the paperwork, so you can focus on your dreams.
                         </p>
-                        {/* Social Links */}
-                        <div className="flex gap-4">
+                        {/* Social Links - improved touch targets */}
+                        <div className="flex gap-3 sm:gap-4 justify-center sm:justify-start">
                             {[
                                 { icon: Facebook, href: '#' },
                                 { icon: Instagram, href: '#' },
@@ -60,8 +60,8 @@ export default function Footer() {
                                 <a
                                     key={index}
                                     href={href}
-                                    className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center
-                           hover:bg-gold-500 transition-colors duration-200"
+                                    className="w-11 h-11 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center
+                                        hover:bg-gold-500 active:bg-gold-600 transition-colors duration-200"
                                 >
                                     <Icon size={18} />
                                 </a>
@@ -71,13 +71,13 @@ export default function Footer() {
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="text-lg font-bold mb-6 text-gold-400">Our Services</h4>
-                        <ul className="space-y-3">
+                        <h4 className="text-base sm:text-lg font-bold mb-4 sm:mb-6 text-gold-400">Our Services</h4>
+                        <ul className="space-y-2 sm:space-y-3">
                             {quickLinks.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-beige-300 hover:text-gold-400 transition-colors"
+                                        className="text-beige-300 hover:text-gold-400 transition-colors text-sm sm:text-base py-1 inline-block"
                                     >
                                         {link.label}
                                     </Link>
@@ -88,13 +88,13 @@ export default function Footer() {
 
                     {/* Company Links */}
                     <div>
-                        <h4 className="text-lg font-bold mb-6 text-gold-400">Company</h4>
-                        <ul className="space-y-3">
+                        <h4 className="text-base sm:text-lg font-bold mb-4 sm:mb-6 text-gold-400">Company</h4>
+                        <ul className="space-y-2 sm:space-y-3">
                             {companyLinks.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-beige-300 hover:text-gold-400 transition-colors"
+                                        className="text-beige-300 hover:text-gold-400 transition-colors text-sm sm:text-base py-1 inline-block"
                                     >
                                         {link.label}
                                     </Link>
@@ -105,24 +105,24 @@ export default function Footer() {
 
                     {/* Contact Info Only - Newsletter removed */}
                     <div>
-                        <h4 className="text-lg font-bold mb-6 text-gold-400">Get In Touch</h4>
-                        <ul className="space-y-4">
-                            <li className="flex items-start gap-3">
+                        <h4 className="text-base sm:text-lg font-bold mb-4 sm:mb-6 text-gold-400">Get In Touch</h4>
+                        <ul className="space-y-3 sm:space-y-4">
+                            <li className="flex items-start gap-3 justify-center sm:justify-start">
                                 <MapPin size={18} className="text-gold-400 mt-1 flex-shrink-0" />
-                                <span className="text-beige-300">
+                                <span className="text-beige-300 text-sm sm:text-base">
                                     123 Boulevard Saint-Germain<br />
                                     75006 Paris, France
                                 </span>
                             </li>
-                            <li className="flex items-center gap-3">
+                            <li className="flex items-center gap-3 justify-center sm:justify-start">
                                 <Mail size={18} className="text-gold-400" />
-                                <a href="mailto:hello@studynest.fr" className="text-beige-300 hover:text-gold-400">
+                                <a href="mailto:hello@studynest.fr" className="text-beige-300 hover:text-gold-400 text-sm sm:text-base py-1">
                                     hello@studynest.fr
                                 </a>
                             </li>
-                            <li className="flex items-center gap-3">
+                            <li className="flex items-center gap-3 justify-center sm:justify-start">
                                 <Phone size={18} className="text-gold-400" />
-                                <a href="tel:+33123456789" className="text-beige-300 hover:text-gold-400">
+                                <a href="tel:+33123456789" className="text-beige-300 hover:text-gold-400 text-sm sm:text-base py-1">
                                     +33 1 23 45 67 89
                                 </a>
                             </li>
@@ -133,15 +133,15 @@ export default function Footer() {
 
             {/* Bottom Bar */}
             <div className="border-t border-white/10">
-                <div className="container mx-auto px-4 py-6">
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                        <p className="text-beige-400 text-sm">
+                <div className="container mx-auto px-4 py-4 sm:py-6">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
+                        <p className="text-beige-400 text-xs sm:text-sm text-center md:text-left">
                             © {currentYear} StudyNest. All rights reserved.
                         </p>
-                        <div className="flex gap-6 text-sm text-beige-400">
-                            <a href="#" className="hover:text-gold-400">Privacy Policy</a>
-                            <a href="#" className="hover:text-gold-400">Terms of Service</a>
-                            <a href="#" className="hover:text-gold-400">Cookie Policy</a>
+                        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-beige-400">
+                            <a href="#" className="hover:text-gold-400 py-1">Privacy Policy</a>
+                            <a href="#" className="hover:text-gold-400 py-1">Terms of Service</a>
+                            <a href="#" className="hover:text-gold-400 py-1">Cookie Policy</a>
                         </div>
                     </div>
                 </div>

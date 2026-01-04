@@ -178,10 +178,10 @@ export default function HowItWorks() {
                          rounded-full text-sm font-semibold mb-4">
                         Simple Process
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-navy-700 mb-4">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-700 mb-4">
                         How <span className="text-gold-500">StudyNest</span> Works
                     </h2>
-                    <p className="text-lg text-navy-600/70 max-w-2xl mx-auto">
+                    <p className="text-base sm:text-lg text-navy-600/70 max-w-2xl mx-auto px-4 sm:px-0">
                         Four simple steps to transform your transition from stressful to seamless.
                     </p>
                 </motion.div>
@@ -194,20 +194,20 @@ export default function HowItWorks() {
                         className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-gold-400 to-green-500 -translate-y-1/2 origin-left"
                     />
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                         {steps.map((step, index) => (
                             <div
                                 key={step.step}
                                 className="step-card relative"
                             >
-                                <div className="bg-white rounded-2xl p-6 shadow-lg border border-beige-200
+                                <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-lg border border-beige-200
                                     hover:shadow-2xl hover:-translate-y-2 transition-all duration-300
                                     relative z-10">
                                     {/* Step number */}
                                     <div
-                                        className={`step-number absolute -top-4 -right-4 w-12 h-12 rounded-xl
+                                        className={`step-number absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-10 h-10 sm:w-12 sm:h-12 rounded-xl
                                             bg-gradient-to-br ${step.color} text-white
-                                            flex items-center justify-center font-bold text-lg
+                                            flex items-center justify-center font-bold text-base sm:text-lg
                                             shadow-lg`}
                                     >
                                         {step.step}
@@ -215,14 +215,14 @@ export default function HowItWorks() {
 
                                     {/* Icon */}
                                     <div
-                                        className={`step-icon w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color}
-                                            flex items-center justify-center mb-5`}
+                                        className={`step-icon w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br ${step.color}
+                                            flex items-center justify-center mb-4 sm:mb-5`}
                                     >
-                                        <step.icon className="w-8 h-8 text-white" />
+                                        <step.icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
                                     </div>
 
-                                    <h3 className="text-xl font-bold text-navy-700 mb-3">{step.title}</h3>
-                                    <p className="text-navy-600/70">{step.description}</p>
+                                    <h3 className="text-lg sm:text-xl font-bold text-navy-700 mb-2 sm:mb-3">{step.title}</h3>
+                                    <p className="text-sm sm:text-base text-navy-600/70">{step.description}</p>
                                 </div>
 
                                 {/* Arrow for desktop */}
@@ -247,7 +247,7 @@ export default function HowItWorks() {
                     transition={{ duration: 0.6, delay: 0.4 }}
                     className="text-center mt-16"
                 >
-                    <a href="/services" className="btn btn-primary text-lg px-8 py-4">
+                    <a href="/services" className="btn btn-primary text-base sm:text-lg px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px]">
                         Start Your Journey Today
                     </a>
                 </motion.div>

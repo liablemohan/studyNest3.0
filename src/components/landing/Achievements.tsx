@@ -194,11 +194,11 @@ export default function Achievements() {
                          rounded-full text-sm font-semibold mb-4">
                         Our Impact
                     </span>
-                    <h2 className="text-4xl md:text-5xl font-bold text-navy-700 mb-4">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-navy-700 mb-4">
                         Trusted by Students
                         <span className="text-gold-500"> Worldwide</span>
                     </h2>
-                    <p className="text-lg text-navy-600/70 max-w-2xl mx-auto">
+                    <p className="text-base sm:text-lg text-navy-600/70 max-w-2xl mx-auto px-4 sm:px-0">
                         We&apos;ve helped thousands of international students make Paris their home.
                         Here&apos;s what we&apos;ve achieved together.
                     </p>
@@ -207,29 +207,29 @@ export default function Achievements() {
                 {/* Stats grid with anime.js staggered reveal */}
                 <div
                     ref={statsGridRef}
-                    className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+                    className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-12 sm:mb-16"
                 >
                     {stats.map((stat) => (
                         <div
                             key={stat.label}
-                            className="stat-card bg-gradient-to-br from-beige-50 to-white p-6 rounded-2xl
+                            className="stat-card bg-gradient-to-br from-beige-50 to-white p-4 sm:p-6 rounded-2xl
                                 border border-beige-200 text-center
                                 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                         >
-                            <div className="w-14 h-14 mx-auto mb-4 rounded-xl 
+                            <div className="w-11 h-11 sm:w-14 sm:h-14 mx-auto mb-3 sm:mb-4 rounded-xl 
                                 bg-gradient-to-br from-navy-600 to-navy-700
                                 flex items-center justify-center">
-                                <stat.icon className="w-7 h-7 text-white" />
+                                <stat.icon className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
                             </div>
-                            <div className="text-3xl md:text-4xl font-bold text-navy-700 mb-1">
+                            <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy-700 mb-1">
                                 <AnimatedCounter
                                     target={stat.number}
                                     suffix={stat.suffix}
                                     shouldAnimate={shouldAnimate}
                                 />
                             </div>
-                            <div className="font-semibold text-navy-600 mb-1">{stat.label}</div>
-                            <div className="text-sm text-navy-500/70">{stat.description}</div>
+                            <div className="font-semibold text-navy-600 mb-1 text-sm sm:text-base">{stat.label}</div>
+                            <div className="text-xs sm:text-sm text-navy-500/70 line-clamp-2">{stat.description}</div>
                         </div>
                     ))}
                 </div>
@@ -242,16 +242,16 @@ export default function Achievements() {
                     {achievements.map((achievement) => (
                         <div
                             key={achievement.title}
-                            className="achievement-card flex gap-5 p-6 bg-gradient-to-r from-navy-700 to-navy-800
+                            className="achievement-card flex flex-col sm:flex-row gap-4 sm:gap-5 p-5 sm:p-6 bg-gradient-to-r from-navy-700 to-navy-800
                                 rounded-2xl text-white group hover:shadow-2xl transition-shadow"
                         >
-                            <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gold-500/20
+                            <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gold-500/20
                                 flex items-center justify-center
-                                group-hover:bg-gold-500/30 transition-colors">
-                                <achievement.icon className="w-7 h-7 text-gold-400" />
+                                group-hover:bg-gold-500/30 transition-colors mx-auto sm:mx-0">
+                                <achievement.icon className="w-6 h-6 sm:w-7 sm:h-7 text-gold-400" />
                             </div>
-                            <div>
-                                <h3 className="text-xl font-bold mb-2 text-white">{achievement.title}</h3>
+                            <div className="text-center sm:text-left">
+                                <h3 className="text-lg sm:text-xl font-bold mb-2 text-white">{achievement.title}</h3>
                                 <p className="text-beige-200/80">{achievement.description}</p>
                             </div>
                         </div>

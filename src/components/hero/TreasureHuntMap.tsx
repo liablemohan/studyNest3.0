@@ -193,7 +193,7 @@ export default function TreasureHuntMap() {
             {/* Interactive Map Area with vintage Paris map background */}
             <div
                 ref={containerRef}
-                className="relative mx-auto max-w-6xl aspect-[16/10] rounded-lg 
+                className="relative mx-auto max-w-6xl aspect-[4/3] sm:aspect-[16/12] md:aspect-[16/10] rounded-lg 
                     shadow-2xl cursor-crosshair overflow-visible"
                 style={{
                     boxShadow: '0 0 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3)',
@@ -249,9 +249,9 @@ export default function TreasureHuntMap() {
                                     />
                                 )}
 
-                                {/* Main spot - vintage parchment style */}
+                                {/* Main spot - vintage parchment style with improved mobile touch targets */}
                                 <div
-                                    className="w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center text-lg md:text-xl
+                                    className="w-12 h-12 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center text-lg sm:text-lg md:text-xl
                                         transition-all duration-300"
                                     style={{
                                         background: isHovered || isClicked
@@ -425,31 +425,6 @@ export default function TreasureHuntMap() {
                 )}
             </div>
 
-            {/* Mobile-friendly list below map */}
-            <div className="container mx-auto px-4 mt-8 md:hidden">
-                <div className="grid grid-cols-2 gap-3">
-                    {serviceSpots.map((spot) => (
-                        <Link
-                            key={spot.id}
-                            href={spot.link}
-                            className="p-3 rounded-lg shadow-md
-                                hover:shadow-lg transition-shadow text-center"
-                            style={{
-                                background: 'linear-gradient(145deg, #f5e6d3 0%, #e8d4b8 100%)',
-                                border: '2px solid #8B4513',
-                            }}
-                        >
-                            <div className="text-2xl mb-1">{spot.icon}</div>
-                            <h3
-                                className="font-bold text-sm"
-                                style={{ color: '#5c3d2e', fontFamily: 'serif' }}
-                            >
-                                {spot.name}
-                            </h3>
-                        </Link>
-                    ))}
-                </div>
-            </div>
         </section>
     );
 }

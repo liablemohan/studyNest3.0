@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
@@ -26,9 +26,9 @@ export default function Footer() {
 
     return (
         <footer className="bg-navy-700 text-white">
-            {/* Main Footer */}
-            <div className="container mx-auto px-4 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            {/* Main Footer - Added more top padding for breathing space */}
+            <div className="container mx-auto px-4 pt-32 pb-16">
+                <div className="grid grid-cols-1 pt-16 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand Column */}
                     <div className="space-y-6">
                         <Link href="/" className="flex items-center gap-3">
@@ -103,10 +103,10 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Contact & Newsletter */}
+                    {/* Contact Info Only - Newsletter removed */}
                     <div>
                         <h4 className="text-lg font-bold mb-6 text-gold-400">Get In Touch</h4>
-                        <ul className="space-y-4 mb-8">
+                        <ul className="space-y-4">
                             <li className="flex items-start gap-3">
                                 <MapPin size={18} className="text-gold-400 mt-1 flex-shrink-0" />
                                 <span className="text-beige-300">
@@ -127,26 +127,6 @@ export default function Footer() {
                                 </a>
                             </li>
                         </ul>
-
-                        {/* Newsletter */}
-                        <div>
-                            <h5 className="font-semibold mb-3">Subscribe to Newsletter</h5>
-                            <form className="flex gap-2">
-                                <input
-                                    type="email"
-                                    placeholder="Your email"
-                                    className="flex-1 px-4 py-2 rounded-lg bg-white/10 border border-white/20
-                           text-white placeholder:text-beige-400
-                           focus:outline-none focus:border-gold-400"
-                                />
-                                <button
-                                    type="submit"
-                                    className="p-2 rounded-lg bg-gold-500 text-navy-900 hover:bg-gold-400 transition-colors"
-                                >
-                                    <Send size={20} />
-                                </button>
-                            </form>
-                        </div>
                     </div>
                 </div>
             </div>

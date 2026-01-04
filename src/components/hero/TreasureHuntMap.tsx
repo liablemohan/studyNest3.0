@@ -223,7 +223,7 @@ export default function TreasureHuntMap() {
                             style={{
                                 left: `${spot.position.x}%`,
                                 top: `${spot.position.y}%`,
-                                zIndex: isClicked || isHovered ? 50 : 10,
+                                zIndex: isClicked || isHovered ? 40 : 10,
                             }}
                         >
                             {/* Clickable spot marker - vintage style */}
@@ -293,7 +293,7 @@ export default function TreasureHuntMap() {
                                             exit={{ opacity: 0, scale: 0.9, y: 10 }}
                                             className="absolute left-1/2 -translate-x-1/2
                                                 rounded-xl p-4 shadow-2xl w-56 md:w-64 text-center
-                                                cursor-pointer transition-shadow z-[100]"
+                                                cursor-pointer transition-shadow z-40"
                                             style={{
                                                 // Position above if spot is in lower half, below otherwise
                                                 ...(spot.position.y > 50

@@ -33,9 +33,7 @@ export default function Header() {
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
                 ? 'bg-white/90 backdrop-blur-lg shadow-md py-3'
-                : isLandingPage
-                    ? 'bg-transparent py-5'
-                    : 'bg-beige-100 py-5'
+                : 'bg-beige-100 py-5'
                 }`}
         >
             <div className="container mx-auto px-4">
@@ -51,10 +49,7 @@ export default function Header() {
                                 sizes="48px"
                             />
                         </div>
-                        <span
-                            className={`text-2xl font-bold font-display transition-colors ${isScrolled || !isLandingPage ? 'text-navy-700' : 'text-white'
-                                }`}
-                        >
+                        <span className="text-2xl font-bold font-display text-navy-700">
                             Study<span className="text-gold-500">Nest</span>
                         </span>
                     </Link>
@@ -67,9 +62,7 @@ export default function Header() {
                                 href={link.href}
                                 className={`relative font-medium transition-colors hover:text-gold-500 ${pathname === link.href
                                     ? 'text-gold-500'
-                                    : isScrolled || !isLandingPage
-                                        ? 'text-navy-700'
-                                        : 'text-white'
+                                    : 'text-navy-700'
                                     }`}
                             >
                                 {link.label}
@@ -92,10 +85,7 @@ export default function Header() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className={`md:hidden p-2 rounded-lg transition-colors ${isScrolled || !isLandingPage
-                            ? 'text-navy-700 hover:bg-navy-100'
-                            : 'text-white hover:bg-white/10'
-                            }`}
+                        className="md:hidden p-2 rounded-lg text-navy-700 hover:bg-navy-100"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
                         {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

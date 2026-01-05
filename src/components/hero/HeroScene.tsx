@@ -137,7 +137,7 @@ export default function HeroScene() {
 
                     {/* Subtitle */}
                     <p className="text-base sm:text-xl md:text-2xl text-white/90 max-w-2xl mx-auto mb-6 sm:mb-10 leading-relaxed px-2 animate-fade-in" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.5)', animationDelay: '1.5s', opacity: 0, animationFillMode: 'forwards' }}>
-                        From housing to banking, from SIM cards to subsidies —
+                        From housing to banking, from SIM cards to subsidies
                         we make settling in Paris effortless for international students.
                     </p>
 

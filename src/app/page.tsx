@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import Header from '@/components/ui/Header';
 import Footer from '@/components/ui/Footer';
 import Achievements from '@/components/landing/Achievements';
@@ -42,18 +41,6 @@ export default function Home() {
 
       {/* Video Hero Section */}
       <HeroScene />
-
-      {/* Banner Section */}
-      <section className="w-full">
-        <Image
-          src="/Banner.webp"
-          alt="StudyNest Banner"
-          width={1920}
-          height={400}
-          className="w-full h-auto"
-          priority
-        />
-      </section>
 
       {/* Interactive Treasure Hunt Map - NEW */}
       <TreasureHuntMap />

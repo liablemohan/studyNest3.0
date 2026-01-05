@@ -271,11 +271,26 @@ export default function PierreBannerCard() {
                             {/* Glow effect behind model */}
                             <div className="absolute inset-0 bg-gradient-radial from-gold-200/20 via-transparent to-transparent rounded-full" />
 
-                            {/* 3D Model - Responsive scaling for all devices */}
+                            {/* 3D Model with fallback for mobile/WebGL issues */}
                             {isMounted ? (
-                                <div className="relative w-full h-full">
-                                    <Pierre3DCanvas mousePosition={mousePosition} modelScale={getModelScale()} />
-                                </div>
+                                screenWidth >= 768 ? (
+                                    // 3D model for tablets and desktops
+                                    <div className="relative w-full h-full">
+                                        <Pierre3DCanvas mousePosition={mousePosition} modelScale={getModelScale()} />
+                                    </div>
+                                ) : (
+                                    // 2D image fallback for phones (more reliable on mobile browsers)
+                                    <div className="relative w-full h-full flex items-center justify-center p-4">
+                                        <Image
+                                            src="/images/pierre-mascot.png"
+                                            alt="Pierre the Pilot - Your StudyNest Guide"
+                                            width={400}
+                                            height={400}
+                                            className="w-full h-full object-contain drop-shadow-2xl animate-fade-in"
+                                            priority
+                                        />
+                                    </div>
+                                )
                             ) : (
                                 <div className="relative w-full h-full flex items-center justify-center">
                                     <div className="w-12 h-12 border-4 border-gold-400 border-t-transparent rounded-full animate-spin" />

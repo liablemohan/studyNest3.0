@@ -34,6 +34,16 @@ const TreasureHuntMap = dynamic(() => import('@/components/hero/TreasureHuntMap'
   ),
 });
 
+// Dynamic import for PierreBannerCard
+const PierreBannerCard = dynamic(() => import('@/components/landing/PierreBannerCard'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full py-20 bg-beige-50 flex items-center justify-center">
+      <div className="w-12 h-12 border-4 border-gold-400 border-t-transparent rounded-full animate-spin" />
+    </div>
+  ),
+});
+
 export default function Home() {
   return (
     <main>
@@ -47,6 +57,9 @@ export default function Home() {
 
       {/* Achievements & Stats */}
       <Achievements />
+
+      {/* Pierre Welcome Banner */}
+      <PierreBannerCard />
 
       {/* How It Works */}
       <HowItWorks />
